@@ -4,11 +4,13 @@ const passport = require('passport'); // Thêm passport vào
 const delay = require('../middleware/delay');
 
 const router = express.Router();
-// router.all("*", delay)
+router.all("*", delay)
 // Route đăng ký
 router.get('/signup', (req, res) => res.render('signUp.ejs'));
 router.post('/signup', createUser);
-
+router.get("/", (req, res) => {
+    return res.status(200).json("hello with v1")
+})
 
 
 // Route đăng nhập

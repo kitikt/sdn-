@@ -5,7 +5,6 @@ const createUser = async (req, res) => {
 
     // Gọi service
     const result = await createUserService(username, password);
-
     // Nếu service trả về success = false => có lỗi
     if (!result.success) {
         // Kiểm tra xem có phải ValidationError không
@@ -16,6 +15,8 @@ const createUser = async (req, res) => {
                 errors[field] = result.error.errors[field].message;
             }
             // Trả về 400 (Bad Request)
+
+
             return res.status(400).json({ errors });
         } else {
             // Lỗi khác => 500 (Internal Server Error)

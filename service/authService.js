@@ -1,22 +1,32 @@
 const User = require('../models/user');
+
 require("dotenv").config()
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt')
 const saltRounds = 10
 
-
 const createUserService = async (username, password) => {
     try {
+        if (password.length < 6) {
+            return { success: false, error: new Error('Minimum password length is 6 characters') };
+        }
         const hashPassword = await bcrypt.hash(password, saltRounds);
-        const newUser = await User.create({
-            username: username,
+
+        // Tạo instance của User
+        const newUser = new User({
+            username,
             password: hashPassword,
-            role: "user"
+            role: 'user',
         });
-        // Thành công => trả về object
+
+        // Ép Mongoose chạy validation đầy đủ
+        await newUser.validate();
+
+        // Lưu vào DB
+        await newUser.save();
+
         return { success: true, data: newUser };
     } catch (error) {
-        // Thất bại => trả về object có error
         return { success: false, error };
     }
 };
