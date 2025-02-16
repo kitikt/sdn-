@@ -1,6 +1,5 @@
-// models/user.js
 const mongoose = require('mongoose');
-const bcrypt = require('bcrypt');
+
 
 const userSchema = new mongoose.Schema({
     username: {
@@ -22,12 +21,12 @@ const userSchema = new mongoose.Schema({
     refreshTokens: [{ type: String }]
 });
 
-userSchema.pre('save', async function (next) {
-    if (this.isModified('password') || this.isNew) {
-        this.password = await bcrypt.hash(this.password, 10); // Hash password
-    }
-    next();
-});
+// userSchema.pre('save', async function (next) {
+//     if (this.isModified('password') || this.isNew) {
+//         this.password = await bcrypt.hash(this.password, 10); // Hash password
+//     }
+//     next();
+// });
 
 const User = mongoose.model('User', userSchema);
 module.exports = User;

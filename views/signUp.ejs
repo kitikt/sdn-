@@ -84,10 +84,9 @@
     </div>
 
     <script>
+        const form = document.querySelector('#signup-form');
         const usernameError = document.querySelector('.username.error');
         const passwordError = document.querySelector('.password.error');
-
-        const form = document.querySelector('#signup-form');
 
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -103,19 +102,32 @@
                 });
                 const data = await res.json();
 
+                // Xóa thông báo lỗi cũ
+                usernameError.textContent = '';
+                passwordError.textContent = '';
+
+                // TH1: Server trả về { errors: { username, password } }
                 if (data.errors) {
                     usernameError.textContent = data.errors.username || '';
                     passwordError.textContent = data.errors.password || '';
                 }
+                // TH2: Server trả về { error: "..." }
+                else if (data.error) {
+                    // Nếu bạn xem đây là lỗi liên quan đến password
+                    passwordError.textContent = data.error;
+                }
+
+                // Nếu đăng ký thành công
                 if (res.status === 201) {
                     alert('Signup successful!');
-                    window.location.href = '/login';  // Redirect to login page
+                    window.location.href = '/login';
                 }
             } catch (error) {
                 console.error('Error:', error);
             }
         });
     </script>
+
 </body>
 
 </html>
