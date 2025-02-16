@@ -106,7 +106,7 @@
                     localStorage.setItem('access_token', data.access_token);
                     alert('Login successful!');
                     // Chuyển hướng đến trang profile hoặc trang chính
-                    window.location.href = '/profile';
+                    window.location.href = '/';
                 } else {
                     // Hiển thị lỗi nếu có
                     usernameError.textContent = data.errors && data.errors.username ? data.errors.username : '';
