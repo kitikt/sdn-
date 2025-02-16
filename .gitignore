@@ -1,0 +1,16 @@
+# Ignore node_modules
+node_modules
+
+# Ignore package-lock.json
+package-lock.json
+
+# Ignore build / dist folders (nếu có)
+build
+dist
+
+# Ignore .env file (nếu có)
+.env
+
+# Ignore logs
+npm-debug.log
+yarn-error.log
