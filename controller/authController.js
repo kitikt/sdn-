@@ -55,6 +55,15 @@ const getUser = async (req, res) => {
     } catch (error) {
         return res.status(500).json({ error: error.message });
     }
+}
+const getAccount = async (req, res) => {
+    try {
+
+        return res.status(200).json(req.user);
+    } catch (error) {
+        return res.status(500).json({ error: error.message });
+    }
 };
 
-module.exports = { createUser, handleLogin, getUser };
+
+module.exports = { createUser, handleLogin, getUser, getAccount };

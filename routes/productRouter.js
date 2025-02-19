@@ -1,8 +1,9 @@
 const express = require('express');
 const Product = require('../models/product');
 const Category = require('../models/category');
+const auth = require('../middleware/auth');
 const router = express.Router();
-
+router.all("*", auth)
 router.get('/', async (req, res) => {
     try {
         const products = await Product.find().populate("categoryId", "name");

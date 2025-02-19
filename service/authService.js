@@ -43,7 +43,8 @@ const loginUserService = async (username, password) => {
         } else {
             //create access token
             const payload = {
-                username: username
+                username: user.username,
+                role: user.role
             }
             const access_token = jwt.sign(
                 payload,
@@ -55,7 +56,9 @@ const loginUserService = async (username, password) => {
             return {
                 access_token,
                 user: {
-                    username: user.username
+                    username: user.username,
+                    role: user.role
+
                 }
             }
         }
