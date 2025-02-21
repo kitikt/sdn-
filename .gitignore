@@ -4,7 +4,7 @@ node_modules
 # Ignore package-lock.json
 package-lock.json
 
-# Ignore build / dist folders (nếu có)
+# Ignore build / dist f olders (nếu có)
 build
 dist
 

@@ -1,4 +1,4 @@
-const { createUserService, loginUserService, getUserService } = require('../service/authService');
+const { createUserService, loginUserService, getUserService, changePasswordService } = require('../service/authService');
 
 const createUser = async (req, res) => {
     const { username, password } = req.body;
@@ -56,14 +56,23 @@ const getUser = async (req, res) => {
         return res.status(500).json({ error: error.message });
     }
 }
-const getAccount = async (req, res) => {
+const changePassword = async (req, res) => {
+    const { oldPassword, newPassword, username } = req.body
+    console.log('check user Controller', username)
+
     try {
 
-        return res.status(200).json(req.user);
+        const data = await changePasswordService(oldPassword, newPassword, username)
+        if (!oldPassword || !newPassword) {
+
+            return res.status(400).json({ message: "Old password and new password are required" });
+
+        } else {
+            return res.status(201).json(data)
+        }
     } catch (error) {
-        return res.status(500).json({ error: error.message });
+        return res.status(400).json({ error: error.message });
     }
-};
+}
 
-
-module.exports = { createUser, handleLogin, getUser, getAccount };
+module.exports = { createUser, handleLogin, getUser, changePassword };

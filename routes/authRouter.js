@@ -1,6 +1,6 @@
 const express = require('express');
-const { handleLogin, getAccount, createUser } = require('../controller/authController');
-const passport = require('passport'); // Thêm passport vào
+const { handleLogin, getAccount, createUser, changePassword } = require('../controller/authController');
+
 const delay = require('../middleware/delay');
 const auth = require('../middleware/auth');
 const { getUserDetail, updateUser, deleteUser, createUserAdmin, getAllUser } = require('../controller/adminController');
@@ -20,10 +20,8 @@ router.post('/login', handleLogin);
 router.get('/login', (req, res) => res.render('login.ejs'));
 
 // Route yêu cầu xác thực
-router.get('/profile', passport.authenticate('jwt', { session: false }), (req, res) => {
-    res.status(200).json({ user: req.user });  // Trả thông tin người dùng đã xác thực
-});
-router.get('/account', getAccount)
+
+router.put('/change-password', changePassword);
 
 //admin route
 router.get('/user', getAllUser);
