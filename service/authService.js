@@ -43,7 +43,8 @@ const loginUserService = async (username, password) => {
         } else {
             //create access token
             const payload = {
-                username: username
+                username: user.username,
+                role: user.role
             }
             const access_token = jwt.sign(
                 payload,
@@ -55,7 +56,9 @@ const loginUserService = async (username, password) => {
             return {
                 access_token,
                 user: {
-                    username: user.username
+                    username: user.username,
+                    role: user.role
+
                 }
             }
         }
@@ -80,5 +83,25 @@ const getUserService = async () => {
         return null
     }
 }
+const changePasswordService = async (oldPassword, newPassword, username) => {
+    console.log('check userservice', username)
+    const user = await User.findOne({ username })
+    console.log('check user', user)
 
-module.exports = { getUserService, loginUserService, createUserService };
+    if (!user) {
+        throw new Error("User not found");
+    }
+    if (oldPassword === newPassword) {
+        throw new Error("New password cannot be the same as the old password");
+    }
+    const isMatchPassword = bcrypt.compareSync(oldPassword, user.password)
+    if (isMatchPassword) {
+        const hashNewPassword = await bcrypt.hash(newPassword, saltRounds);
+        user.password = hashNewPassword;
+        await user.save();
+        return { message: "Password changed successfully" };
+    } else {
+        throw new Error("Old password is incorrect");
+    }
+}
+module.exports = { getUserService, loginUserService, createUserService, changePasswordService };
