@@ -3,31 +3,91 @@ const Category = require('../models/category');
 const auth = require('../middleware/auth');
 const router = express.Router();
 
-router.all("*", auth)
+/**
+ * @swagger
+ * tags:
+ *   name: Category
+ *   description: API quản lý danh mục sản phẩm
+ */
+
+/**
+ * @swagger
+ * /category:
+ *   get:
+ *     summary: Lấy danh sách tất cả các danh mục
+ *     tags:
+ *       - Category
+ *     responses:
+ *       200:
+ *         description: Trả về danh sách các danh mục
+ */
 router.get('/', async (req, res) => {
     try {
-        const categories = await Category.find().populate("products", "name");
-
+        const categories = await Category.find();
         res.status(200).json(categories);
-    } catch (error) {
-        res.status(500).json({ error: error.message });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
     }
 });
 
+/**
+ * @swagger
+ * /category/{id}:
+ *   get:
+ *     summary: Lấy danh mục theo ID
+ *     tags:
+ *       - Category
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID của danh mục
+ *     responses:
+ *       200:
+ *         description: Trả về thông tin danh mục
+ *       404:
+ *         description: Danh mục không tồn tại
+ */
 router.get('/:id', async (req, res) => {
     try {
-        const category = await Category.findById(req.params.id).populate("products", "name");
-
+        const category = await Category.findById(req.params.id);
         if (!category) {
-            return res.status(404).json({ error: 'Category not found' });
+            return res.status(404).json({ error: "Category not found" });
         }
         res.status(200).json(category);
-    } catch (error) {
-        res.status(500).json({ error: error.message });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
     }
 });
 
-router.post('/', async (req, res) => {
+/**
+ * @swagger
+ * /category:
+ *   post:
+ *     summary: Tạo danh mục mới
+ *     tags:
+ *       - Category
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - name
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 example: "Điện thoại"
+ *     responses:
+ *       201:
+ *         description: Danh mục đã được tạo
+ */
+router.post('/', auth, async (req, res) => {
     try {
         const newCategory = new Category(req.body);
         const savedCategory = await newCategory.save();
@@ -37,40 +97,75 @@ router.post('/', async (req, res) => {
     }
 });
 
-router.put('/:id', async (req, res) => {
+/**
+ * @swagger
+ * /category/{id}:
+ *   put:
+ *     summary: Cập nhật danh mục
+ *     tags:
+ *       - Category
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID của danh mục
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 example: "Máy tính"
+ *     responses:
+ *       200:
+ *         description: Danh mục đã được cập nhật
+ */
+router.put('/:id', auth, async (req, res) => {
     try {
-        const updatedCategory = await Category.findByIdAndUpdate(
-            req.params.id,
-            req.body,
-            { new: true }
-        );
+        const updatedCategory = await Category.findByIdAndUpdate(req.params.id, req.body, { new: true });
         if (!updatedCategory) {
-            return res.status(404).json({ error: 'Category not found' });
+            return res.status(404).json({ error: "Category not found" });
         }
-        res.status(200).json({ message: 'Update category success', category: updatedCategory });
+        res.status(200).json(updatedCategory);
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
 });
 
-router.delete('/:id', async (req, res) => {
+/**
+ * @swagger
+ * /category/{id}:
+ *   delete:
+ *     summary: Xóa danh mục
+ *     tags:
+ *       - Category
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID của danh mục
+ *     responses:
+ *       200:
+ *         description: Danh mục đã bị xóa
+ */
+router.delete('/:id', auth, async (req, res) => {
     try {
-        const findProductCategory = await Category.findById(req.params.id).populate("products")
-
-
-        if (findProductCategory.products.length === 0) {
-            const deletedCategory = await Category.findByIdAndDelete(req.params.id);
-            if (!deletedCategory) {
-                return res.status(404).json({ error: 'Category not found' });
-            }
-            res.status(200).json({ message: 'Delete category success', category: deletedCategory });
-        } else {
-            res.status(400).json({ message: "Delete category fail because its still have product inside" })
+        const deletedCategory = await Category.findByIdAndDelete(req.params.id);
+        if (!deletedCategory) {
+            return res.status(404).json({ error: "Category not found" });
         }
-
-
-        // console.log("check pridfwfd", product)
-
+        res.status(200).json({ message: "Category deleted successfully" });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }

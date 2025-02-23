@@ -1,11 +1,11 @@
 const express = require('express');
-const { handleLogin, getAccount, createUser, changePassword, handleRefreshToken } = require('../controller/authController');
+const { handleLogin, createUser, changePassword, handleRefreshToken } = require('../controller/authController');
 const { getUserDetail, updateUser, deleteUser, createUserAdmin, getAllUser } = require('../controller/adminController');
 const auth = require('../middleware/auth');
 const router = express.Router();
 
 // Áp dụng middleware auth cho tất cả các route
-router.all("*", auth);
+// router.all("*", auth);
 
 /**
  * @swagger
@@ -140,8 +140,36 @@ router.get('/login', auth, (req, res) => res.render('login.ejs'));
  *       500:
  *         description: Server error
  */
-router.post('/refresh', handleRefreshToken);
 router.post('/login', handleLogin);
+
+/**
+ * @swagger
+ * /v1/refresh:
+ *   post:
+ *     summary: Làm mới access token bằng refresh token
+ *     tags:
+ *       - Auth
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - refreshToken
+ *             properties:
+ *               refreshToken:
+ *                 type: string
+ *                 example: "eyJhbGciOiJIUzI1NiIsIn..."
+ *     responses:
+ *       200:
+ *         description: Trả về access token mới
+ *       403:
+ *         description: Refresh token không hợp lệ hoặc hết hạn
+ */
+router.post('/refresh', handleRefreshToken);
+
+
 
 /**
  * @swagger
@@ -183,7 +211,7 @@ router.post('/login', handleLogin);
  *       401:
  *         description: Unauthorized (invalid token)
  */
-router.put('/change-password', changePassword);
+router.put('/change-password', auth, changePassword);
 
 /**
  * @swagger

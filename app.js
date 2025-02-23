@@ -5,27 +5,28 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 // var passport = require('passport')
 // require('./config/passport')(passport);
-var productRouter = require('./routes/productRouter');
-var categoryRouter = require('./routes/categoryRouter');
+// var productRouter = require('./routes/productRouter');
+// var categoryRouter = require('./routes/categoryRouter');
 var authRouter = require('./routes/authRouter');
 var swaggerUi = require('swagger-ui-express');
 var swaggerSpec = require('./config/swagger');
 
 var app = express();
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // View engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use('/category', categoryRouter);
-app.use('/product', productRouter);
+app.use('/category', require('./routes/categoryRouter'));
+app.use('/product', require('./routes/productRouter'));
 app.use('/v1', authRouter);
-app.use('/', (req, res) => res.render('index.ejs'))
+app.get('/', (req, res) => res.render('index.ejs')); // ✅ Chỉ cho phép render index.ejs khi truy cập "/"
+
 
 // ❌ Middleware xử lý lỗi 404 - phải đặt SAU tất cả route
 app.use(function (req, res, next) {

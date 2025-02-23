@@ -10,7 +10,9 @@ const auth = (req, res, next) => {
     if (white_lists.find(item => "/v1" + item === req.originalUrl)) {
         return next();
     }
-
+    if (req.method === "GET") {
+        return next();
+    }
     // Kiểm tra token trong header Authorization
     const authHeader = req.headers.authorization;
     if (!authHeader) {
