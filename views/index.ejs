@@ -1,11 +1,112 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title><%= title %></title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
-  </head>
-  <body>
-    <h1><%= title %></h1>
-    <p>Welcome to <%= title %></p>
-  </body>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Home | CubeFactory</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body,
+    html {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+    }
+
+    header {
+      background-color: #007bff;
+      padding: 20px;
+      text-align: center;
+      color: white;
+    }
+
+    nav {
+      background-color: #0056b3;
+      padding: 10px;
+      text-align: center;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin: 0 10px;
+      font-size: 16px;
+    }
+
+    main {
+      padding: 20px;
+      text-align: center;
+    }
+
+    main h1 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      color: #333;
+    }
+
+    main p {
+      color: #666;
+      max-width: 600px;
+      margin: 0 auto 2rem auto;
+      line-height: 1.5;
+    }
+
+    footer {
+      background-color: #333;
+      color: white;
+      text-align: center;
+      padding: 10px;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+    }
+
+    .btn {
+      display: inline-block;
+      background-color: #007bff;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 5px;
+      text-decoration: none;
+      margin: 5px;
+    }
+
+    .btn:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h2>CubeFactory</h2>
+  </header>
+  <nav>
+    <a href="/">Home</a>
+    <a href="/v1/login">Login</a>
+    <a href="/v1/signup">Sign Up</a>
+    <a href="/aboutUs">About Us</a>
+    <a href="/contact">Contact</a>
+  </nav>
+  <main>
+    <h1>Welcome to CubeFactory</h1>
+    <p>
+      This is the homepage of CubeFactory, your one-stop solution for all your e-commerce needs.
+      Explore our platform to find amazing products, manage your account, or learn more about our services.
+    </p>
+    <p>
+      <a href="/v1/login" class="btn">Login</a>
+      <a href="/v1/signup" class="btn">Sign Up</a>
+    </p>
+  </main>
+  <footer>
+    <p>&copy; 2025 CubeFactory. All rights reserved.</p>
+  </footer>
+</body>
+
 </html>

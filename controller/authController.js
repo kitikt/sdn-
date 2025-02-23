@@ -1,4 +1,5 @@
-const { createUserService, loginUserService, getUserService, changePasswordService } = require('../service/authService');
+const User = require('../models/user');
+const { createUserService, loginUserService, getUserService, changePasswordService, refreshTokenService } = require('../service/authService');
 
 const createUser = async (req, res) => {
     const { username, password } = req.body;
@@ -31,22 +32,50 @@ const createUser = async (req, res) => {
     });
 };
 
+// controller/authController.js
 const handleLogin = async (req, res) => {
     try {
         const { username, password } = req.body;
         const data = await loginUserService(username, password);
 
-        // Nếu loginUserService trả về EC=1,2 => lỗi đăng nhập
         if (data.EC) {
-            return res.status(400).json(data);
+            return res.status(400).json({ error: data.EM });
         }
 
-        // Thành công => 200
-        return res.status(200).json(data);
+        // Trả về cả access_token và refreshToken trong body
+        return res.status(200).json({
+            access_token: data.access_token,
+            refresh_token: data.refresh_token, // 🟢 Trả về refresh token trong body
+            user: data.user
+        });
+
     } catch (error) {
         return res.status(500).json({ error: error.message });
     }
 };
+const handleRefreshToken = async (req, res) => {
+    console.log("🔥 handleRefreshToken() is called"); // 🛠 Debug
+
+    try {
+        const { refreshToken } = req.body;
+        console.log("🔥 Received refreshToken in Controller:", refreshToken); // 🛠 Debug
+
+        if (!refreshToken) {
+            console.log("❌ No refresh token provided");
+            return res.status(401).json({ EC: 1, EM: "No refresh token provided" });
+        }
+
+        const response = await refreshTokenService(refreshToken);
+        console.log("🚀 Response from refreshTokenService:", response);
+
+        return res.status(200).json(response);
+    } catch (error) {
+        console.log("❌ Error in handleRefreshToken:", error.message);
+        return res.status(500).json({ EC: 3, EM: "Internal Server Error" });
+    }
+};
+
+
 
 const getUser = async (req, res) => {
     try {
@@ -57,7 +86,8 @@ const getUser = async (req, res) => {
     }
 }
 const changePassword = async (req, res) => {
-    const { oldPassword, newPassword, username } = req.body
+    const { oldPassword, newPassword } = req.body
+    const username = req.user.username;
     console.log('check user Controller', username)
 
     try {
@@ -75,4 +105,4 @@ const changePassword = async (req, res) => {
     }
 }
 
-module.exports = { createUser, handleLogin, getUser, changePassword };
+module.exports = { createUser, handleLogin, getUser, changePassword, handleRefreshToken };

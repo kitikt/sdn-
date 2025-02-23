@@ -8,24 +8,24 @@ var logger = require('morgan');
 var productRouter = require('./routes/productRouter');
 var categoryRouter = require('./routes/categoryRouter');
 var authRouter = require('./routes/authRouter');
+var swaggerUi = require('swagger-ui-express');
+var swaggerSpec = require('./config/swagger');
 
 var app = express();
 
 // View engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
-
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-
 app.use('/category', categoryRouter);
 app.use('/product', productRouter);
 app.use('/v1', authRouter);
-
-
+app.use('/', (req, res) => res.render('index.ejs'))
 
 // ❌ Middleware xử lý lỗi 404 - phải đặt SAU tất cả route
 app.use(function (req, res, next) {

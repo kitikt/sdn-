@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
-const white_lists = ["/", "/signup", "/login", "/change-password"];
+const white_lists = ["/", "/signup", "/login", "/refresh"];
 
 const auth = (req, res, next) => {
     console.log('check req.originalUrl:', req.originalUrl);
@@ -25,10 +25,10 @@ const auth = (req, res, next) => {
 
     try {
         // Giải mã token
-        const decoded = jwt.verify(token, process.env.JWT_SECRECT);
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
         // Gán toàn bộ payload cho req.user (bao gồm id, username, role, iat, exp)
         req.user = decoded;
-        console.log("Token decoded:", decoded);
+        // console.log("Token decoded:", decoded);
 
         // Phân quyền dựa trên role:
         // Nếu không phải admin, chỉ cho phép GET (đọc) các thao tác
