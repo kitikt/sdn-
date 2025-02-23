@@ -2,6 +2,7 @@ const express = require('express');
 const { handleLogin, createUser, changePassword, handleRefreshToken } = require('../controller/authController');
 const { getUserDetail, updateUser, deleteUser, createUserAdmin, getAllUser } = require('../controller/adminController');
 const auth = require('../middleware/auth');
+const isAdmin = require('../middleware/isAdmin');
 const router = express.Router();
 
 // Áp dụng middleware auth cho tất cả các route
@@ -69,23 +70,6 @@ router.get('/signup', (req, res) => res.render('signUp.ejs'));
  */
 router.post('/signup', createUser);
 
-/**
- * @swagger
- * /v1/:
- *   get:
- *     summary: Endpoint test
- *     tags:
- *       - Auth
- *     responses:
- *       200:
- *         description: Hello message
- *         content:
- *           application/json:
- *             schema:
- *               type: string
- *               example: "hello with v1"
- */
-router.get("/", (req, res) => res.status(200).json("hello with v1"));
 
 /**
  * @swagger
@@ -98,7 +82,7 @@ router.get("/", (req, res) => res.status(200).json("hello with v1"));
  *       200:
  *         description: Trang login hiển thị thành công
  */
-router.get('/login', auth, (req, res) => res.render('login.ejs'));
+router.get('/login', (req, res) => res.render('login.ejs'));
 
 /**
  * @swagger
@@ -241,7 +225,7 @@ router.put('/change-password', auth, changePassword);
  *       403:
  *         description: Access denied - Only admin can access user management
  */
-router.get('/user', getAllUser);
+router.get('/user', auth, isAdmin, getAllUser);
 
 /**
  * @swagger
@@ -269,7 +253,7 @@ router.get('/user', getAllUser);
  *       404:
  *         description: User not found
  */
-router.get('/user/:id', getUserDetail);
+router.get('/user/:id', auth, isAdmin, getUserDetail);
 
 /**
  * @swagger
@@ -315,7 +299,7 @@ router.get('/user/:id', getUserDetail);
  *       400:
  *         description: Validation error
  */
-router.post('/user', createUserAdmin);
+router.post('/user', auth, isAdmin, createUserAdmin);
 
 /**
  * @swagger
@@ -365,7 +349,7 @@ router.post('/user', createUserAdmin);
  *       404:
  *         description: User not found
  */
-router.put('/user/:id', updateUser);
+router.put('/user/:id', auth, isAdmin, updateUser);
 
 /**
  * @swagger
@@ -396,6 +380,6 @@ router.put('/user/:id', updateUser);
  *       404:
  *         description: User not found
  */
-router.delete('/user/:id', deleteUser);
+router.delete('/user/:id', auth, isAdmin, deleteUser);
 
 module.exports = router;
