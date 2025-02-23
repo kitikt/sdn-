@@ -3,30 +3,109 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>
-        <%=title %>
-    </title>
-    <link rel="stylesheet" href="/stylesheets/style.css">
+    <title>Contact Us - EcoFashion Hub</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+
+        header,
+        footer {
+            background-color: #007bff;
+            color: white;
+            padding: 15px;
+            text-align: center;
+        }
+
+        main {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px auto;
+            max-width: 600px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            margin-top: 10px;
+        }
+
+        input,
+        textarea {
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            margin-top: 15px;
+            padding: 10px;
+            background-color: #0056b3;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #003f7f;
+        }
+    </style>
 </head>
 
 <body>
     <header>
-        <h1>Contact Us</h1>
+        <h1>Contact EcoFashion Hub</h1>
     </header>
     <main>
-        <section>
-            <h2>Our Mission</h2>
-            <p>Our mission is to provide the best services to our customers.</p>
-        </section>
-        <section>
-            <h2>Our Team</h2>
-            <p>We have a dedicated team of professionals.</p>
-        </section>
+        <form id="contact-form">
+            <label for="name">Your Name</label>
+            <input type="text" id="name" name="name" required />
+
+            <label for="email">Your Email</label>
+            <input type="email" id="email" name="email" required />
+
+            <label for="message">Your Message</label>
+            <textarea id="message" name="message" rows="5" required></textarea>
+
+            <button type="submit">Send Message</button>
+        </form>
+        <div id="response"></div>
     </main>
     <footer>
-        <p>&copy; <%= new Date().getFullYear() %> Your Company. All rights reserved.</p>
+        <p>&copy; 2025 EcoFashion Hub</p>
     </footer>
+    <script>
+        const form = document.getElementById('contact-form');
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const message = document.getElementById('message').value;
+
+            try {
+                // Giả sử bạn có endpoint /contact để xử lý thông tin liên hệ
+                const res = await fetch('/contact', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, email, message })
+                });
+                const data = await res.json();
+                document.getElementById('response').textContent = data.message;
+            } catch (error) {
+                document.getElementById('response').textContent = "Error sending message.";
+            }
+        });
+    </script>
 </body>
 
 </html>
