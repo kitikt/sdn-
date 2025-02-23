@@ -7,7 +7,6 @@ var logger = require('morgan');
 // require('./config/passport')(passport);
 // var productRouter = require('./routes/productRouter');
 // var categoryRouter = require('./routes/categoryRouter');
-var authRouter = require('./routes/authRouter');
 var swaggerUi = require('swagger-ui-express');
 var swaggerSpec = require('./config/swagger');
 
@@ -24,16 +23,14 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/category', require('./routes/categoryRouter'));
 app.use('/product', require('./routes/productRouter'));
-app.use('/v1', authRouter);
-app.get('/', (req, res) => res.render('index.ejs')); // ✅ Chỉ cho phép render index.ejs khi truy cập "/"
+app.use('/v1', require('./routes/authRouter'));
+app.get('/', (req, res) => res.render('index.ejs'));
 
 
-// ❌ Middleware xử lý lỗi 404 - phải đặt SAU tất cả route
 app.use(function (req, res, next) {
   next(createError(404));
 });
 
-// ❌ Middleware xử lý lỗi chung - phải đặt cuối cùng
 app.use(function (err, req, res, next) {
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
