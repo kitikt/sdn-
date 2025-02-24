@@ -25,9 +25,9 @@ const auth = (req, res, next) => {
     const token = parts[1];
 
     try {
-        // Giải mã token
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         req.user = decoded;
+
         console.log(" Decoded Token:", req.user);
 
         next();

@@ -6,35 +6,29 @@ const createUser = async (req, res) => {
 
     // Gọi service
     const result = await createUserService(username, password);
-    // Nếu service trả về success = false => có lỗi
     if (!result.success) {
-        // Kiểm tra xem có phải ValidationError không
         if (result.error.name === 'ValidationError') {
-            // parse lỗi chi tiết từng field
             let errors = {};
             for (let field in result.error.errors) {
                 errors[field] = result.error.errors[field].message;
             }
-            // Trả về 400 (Bad Request)
 
 
             return res.status(400).json({ errors });
         } else {
-            // Lỗi khác => 500 (Internal Server Error)
             return res.status(500).json({ error: result.error.message });
         }
     }
 
-    // Nếu thành công => trả về 201 (Created)
     return res.status(201).json({
         message: 'Signup successful!',
-        data: result.data, // Bạn có thể chỉ trả username/role nếu muốn ẩn password
+        data: result.data,
     });
 };
 
-// controller/authController.js
 const handleLogin = async (req, res) => {
     try {
+
         const { username, password } = req.body;
         const data = await loginUserService(username, password);
 
@@ -42,10 +36,9 @@ const handleLogin = async (req, res) => {
             return res.status(400).json({ error: data.EM });
         }
 
-        // Trả về cả access_token và refreshToken trong body
         return res.status(200).json({
             access_token: data.access_token,
-            refresh_token: data.refresh_token, // 🟢 Trả về refresh token trong body
+            refresh_token: data.refresh_token,
             user: data.user
         });
 
@@ -54,11 +47,11 @@ const handleLogin = async (req, res) => {
     }
 };
 const handleRefreshToken = async (req, res) => {
-    console.log("🔥 handleRefreshToken() is called"); // 🛠 Debug
+    console.log("handleRefreshToken() is called");
 
     try {
         const { refreshToken } = req.body;
-        console.log("🔥 Received refreshToken in Controller:", refreshToken); // 🛠 Debug
+        console.log("Received refreshToken in Controller:", refreshToken);
 
         if (!refreshToken) {
             console.log("❌ No refresh token provided");

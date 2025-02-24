@@ -96,7 +96,6 @@ router.post('/', auth, async (req, res) => {
         if (!category) {
             return res.status(404).json({ error: "Category not found" });
         }
-
         const newProduct = new Product(req.body);
         const savedProduct = await newProduct.save();
 
