@@ -1,0 +1,37 @@
+<div class="backdrop"></div>
+<style>
+    .navbar {
+        background-color: #055D4C;
+        padding: 15px 30px;
+        display: flex;
+        align-items: center;
+    }
+
+    .navbar a {
+        color: white;
+        text-decoration: none;
+        padding: 10px 15px;
+        font-size: 16px;
+    }
+
+    .navbar a:hover {
+        background-color: #04463A;
+        border-radius: 5px;
+    }
+</style>
+<header class="main-header">
+
+    <nav class="navbar">
+        <a href="/">Shop</a>
+        <a href="/product">Products</a>
+        <a href="/cart">Cart</a>
+        <a href="/orders">Orders</a>
+
+        <% if (typeof user !=='undefined' && user && user.role==='admin' ) { %>
+
+            <a href="/add-product">Add Product</a>
+            <a href="/admin-products">Admin Products</a>
+            <% } %>
+
+    </nav>
+</header>

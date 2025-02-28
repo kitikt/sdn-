@@ -19,7 +19,11 @@ const productSchema = new mongoose.Schema({
         max: 99
 
     },
-    categoryId: { type: mongoose.Schema.Types.ObjectId, ref: 'Category', required: true }
+    categoryId: { type: mongoose.Schema.Types.ObjectId, ref: 'Category', required: true },
+    image: {
+        type: String // Lưu đường dẫn file ảnh
+    }
+
 });
 const Product = mongoose.model('Product', productSchema);
 module.exports = Product;
