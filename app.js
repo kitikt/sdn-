@@ -9,7 +9,7 @@ var logger = require('morgan');
 // var categoryRouter = require('./routes/categoryRouter');
 var swaggerUi = require('swagger-ui-express');
 var swaggerSpec = require('./config/swagger');
-
+var dashboardRouter = require('./routes/dashboardRouter')
 var app = express();
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
@@ -24,8 +24,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/category', require('./routes/categoryRouter'));
 app.use('/product', require('./routes/productRouter'));
 app.use('/v1', require('./routes/authRouter'));
-app.get('/', (req, res) => res.render('index.ejs'));
-app.use('/dashboard', require('./routes/homeRouter'))
+app.use(dashboardRouter)
+app.use('/dashboard', require('./routes/dashboardRouter'))
 app.use(function (req, res, next) {
   next(createError(404));
 });

@@ -2,6 +2,7 @@ const express = require('express');
 const Product = require('../models/product');
 const Category = require('../models/category');
 const auth = require('../middleware/auth');
+const upload = require('../middleware/upload');
 const router = express.Router();
 
 /**
@@ -25,9 +26,9 @@ const router = express.Router();
 router.get('/', async (req, res) => {
     try {
         const products = await Product.find().populate("categoryId", "name");
-        res.status(200).json(products);
+        return res.render('product', { prods: products, path: '/products' });
     } catch (err) {
-        res.status(500).json({ error: err.message });
+        return res.status(500).json({ error: err.message });
     }
 });
 
@@ -90,13 +91,22 @@ router.get('/:id', async (req, res) => {
  *       201:
  *         description: Sản phẩm được thêm thành công
  */
-router.post('/', auth, async (req, res) => {
+router.post('/', auth, upload.single('image'), async (req, res) => {
     try {
+        // Kiểm tra xem danh mục có tồn tại không
         const category = await Category.findById(req.body.categoryId);
         if (!category) {
             return res.status(404).json({ error: "Category not found" });
         }
-        const newProduct = new Product(req.body);
+
+        // Tạo dữ liệu sản phẩm từ req.body
+        let productData = req.body;
+        if (req.file) {
+            // Nếu có file upload, lưu đường dẫn file ảnh
+            productData.image = '/uploads/' + req.file.filename;
+        }
+
+        const newProduct = new Product(productData);
         const savedProduct = await newProduct.save();
 
         // Cập nhật category để chứa sản phẩm này
@@ -107,6 +117,7 @@ router.post('/', auth, async (req, res) => {
         res.status(400).json({ error: err.message });
     }
 });
+
 
 /**
  * @swagger

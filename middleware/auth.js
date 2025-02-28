@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
-const white_lists = ["/", "/signup", "/login", "/refresh"];
+const white_lists = ["/signup", "/login", "/refresh"];
 
 const auth = (req, res, next) => {
     console.log('🔹 Check req.originalUrl:', req.originalUrl);
@@ -36,7 +36,8 @@ const auth = (req, res, next) => {
         // Giải mã token
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         req.user = decoded;
-        console.log("✅ Decoded Token:", req.user);
+        res.locals.user = req.user;
+        console.log("✅ Decoded Token:", res.locals.user);
 
         next();
     } catch (error) {
