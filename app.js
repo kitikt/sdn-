@@ -7,13 +7,16 @@ var logger = require('morgan');
 // require('./config/passport')(passport);
 // var productRouter = require('./routes/productRouter');
 // var categoryRouter = require('./routes/categoryRouter');
+var session = require('express-session')
 var swaggerUi = require('swagger-ui-express');
 var swaggerSpec = require('./config/swagger');
 var dashboardRouter = require('./routes/dashboardRouter')
+var { logoutController } = require('./controller/shopController');  // Import logoutController từ controller
+
 var app = express();
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-// View engine setup
+// View engine setupw
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 app.use(logger('dev'));
@@ -21,11 +24,19 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(session({
+  secret: '03bb0a95-7545-4e26-9214-a3717cb1e670', // Thay bằng chuỗi bí mật của bạn
+  resave: false,
+  saveUninitialized: false,
+  cookie: { secure: false } // Đặt secure: true nếu dùng HTTPS
+}));
 app.use('/category', require('./routes/categoryRouter'));
 app.use('/product', require('./routes/productRouter'));
 app.use('/v1', require('./routes/authRouter'));
 app.use(dashboardRouter)
-app.use('/dashboard', require('./routes/dashboardRouter'))
+
+app.get('/logout', logoutController); // Gọi logoutController ở đây
+
 app.use(function (req, res, next) {
   next(createError(404));
 });

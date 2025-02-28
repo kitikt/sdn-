@@ -20,18 +20,42 @@
     }
 </style>
 <header class="main-header">
-
     <nav class="navbar">
         <a href="/">Shop</a>
         <a href="/product">Products</a>
         <a href="/cart">Cart</a>
         <a href="/orders">Orders</a>
 
-        <% if (typeof user !=='undefined' && user && user.role==='admin' ) { %>
 
+        <% if (user && user.role==='admin' ) { %>
             <a href="/add-product">Add Product</a>
             <a href="/admin-products">Admin Products</a>
             <% } %>
+                <% if (user) { %>
+                    <p>Welcome, <%= user.username %>!</p> <!-- Hiển thị tên người dùng -->
+                    <a href="/logout" class="logout-button" onclick="logout()">Logout</a>
+                    <% } else { %>
 
+                        <a href="/v1/login">Login</a> <!-- Nếu không có người dùng, hiển thị link đăng nhập -->
+                        <% } %>
     </nav>
+
+
 </header>
+<script>
+    function logout() {
+        // Xóa token trong localStorage
+        localStorage.removeItem('access_token');
+
+        // Gửi yêu cầu logout đến backend để xóa session và cookie
+        fetch('/logout', {
+            method: 'GET',
+            credentials: 'same-origin' // Đảm bảo cookie được gửi cùng với yêu cầu
+        }).then(response => {
+            window.location.href = '/'; // Sau khi xóa session và cookie, chuyển hướng về trang chủ
+        }).catch(error => {
+            console.error('Logout failed:', error);
+            window.location.href = '/'; // Nếu lỗi, chuyển hướng về trang chủ
+        });
+    }
+</script>
