@@ -18,80 +18,37 @@
             height: 100%;
             width: 100%;
             background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         .container {
             display: flex;
-            flex-direction: row;
+            max-width: 900px;
             width: 100%;
-            height: 100vh;
+            background-color: white;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
         }
 
         .left-panel {
             flex: 1;
+            padding: 40px;
             display: flex;
             flex-direction: column;
             justify-content: center;
-            padding: 40px;
-            background-color: #ffffff;
         }
 
-        .login-box {
-            max-width: 350px;
-            margin: 0 auto;
+        .left-panel h1 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
         }
 
-        .login-box h1 {
-            font-size: 2rem;
-            margin-bottom: 1rem;
-        }
-
-        .login-box p {
-            margin-bottom: 2rem;
+        .left-panel p {
             color: #666;
-        }
-
-        .social-login {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-color: #f1f1f1;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            padding: 10px;
-            cursor: pointer;
-            margin-bottom: 1rem;
-        }
-
-        .social-login img {
-            width: 20px;
-            height: 20px;
-            margin-right: 8px;
-        }
-
-        .separator {
-            text-align: center;
-            margin: 1rem 0;
-            color: #999;
-            position: relative;
-        }
-
-        .separator::before,
-        .separator::after {
-            content: "";
-            position: absolute;
-            top: 50%;
-            width: 40%;
-            height: 1px;
-            background: #ccc;
-        }
-
-        .separator::before {
-            left: 0;
-        }
-
-        .separator::after {
-            right: 0;
+            margin-bottom: 20px;
         }
 
         form {
@@ -100,8 +57,7 @@
         }
 
         label {
-            margin-top: 1rem;
-            margin-bottom: 0.5rem;
+            margin-top: 10px;
             font-weight: bold;
             color: #333;
         }
@@ -111,87 +67,60 @@
             padding: 10px;
             border: 1px solid #ccc;
             border-radius: 5px;
+            margin-top: 5px;
         }
 
-        .error {
+        /* Các thẻ hiển thị lỗi */
+        .username.error,
+        .password.error {
             color: red;
             font-size: 12px;
             margin-top: 5px;
         }
 
-        .checkbox-row {
-            display: flex;
-            align-items: center;
-            margin: 0.5rem 0 1rem 0;
-        }
-
-        .checkbox-row input[type="checkbox"] {
-            margin-right: 8px;
-        }
-
-        .forgot-password {
-            margin-left: auto;
-            font-size: 0.9rem;
-        }
-
-        .forgot-password a {
-            color: #007bff;
-            text-decoration: none;
-        }
-
         button[type="submit"] {
-            width: 100%;
-            background-color: #007bff;
+            background-color: #1a202c;
             color: white;
-            padding: 10px;
+            padding: 12px;
             border: none;
             border-radius: 5px;
-            margin-top: 1rem;
+            margin-top: 15px;
             cursor: pointer;
             font-size: 16px;
         }
 
         button[type="submit"]:hover {
-            background-color: #0056b3;
+            background-color: #2d3748;
         }
 
-        .signup-row {
-            text-align: center;
-            margin-top: 1rem;
-            font-size: 0.9rem;
+        .social-login {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
         }
 
-        .signup-row a {
-            color: #007bff;
-            text-decoration: none;
-            margin-left: 5px;
+        .social-login button {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: white;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .social-login button:hover {
+            background-color: #f1f1f1;
         }
 
         .right-panel {
             flex: 1;
             background: url('/images/login2.jpg') no-repeat center center;
             background-size: cover;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 40px;
-        }
-
-        .right-panel .info-text {
-            color: #fff;
-            padding: 20px;
-            border-radius: 10px;
-            text-align: center;
-        }
-
-        .right-panel h2 {
-            font-size: 2rem;
-            margin-bottom: 1rem;
-        }
-
-        .right-panel p {
-            font-size: 1rem;
-            line-height: 1.5;
         }
 
         @media (max-width: 768px) {
@@ -200,59 +129,45 @@
             }
 
             .right-panel {
-                display: none;
+                height: 300px;
             }
         }
     </style>
 </head>
+<script>
+    if (localStorage.getItem('access_token')) {
+        window.location.href = '/';
+    }
+</script>
 
 <body>
     <div class="container">
         <div class="left-panel">
-            <div class="login-box">
-                <h1>Welcome back</h1>
-                <p>Please enter your details</p>
+            <h1>Login</h1>
+            <p>Welcome back! Please enter your details</p>
 
-                <div class="social-login" id="google-login">
-                    <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google Logo" />
-                    <span>Sign in with Google</span>
-                </div>
+            <form id="login-form">
+                <label for="username">Username</label>
+                <input type="text" name="username" id="username" required />
+                <div class="username error"></div>
 
-                <div class="separator">or</div>
+                <label for="password">Password</label>
+                <input type="password" name="password" id="password" required />
+                <div class="password error"></div>
 
-                <form id="login-form">
-                    <label for="username">Username</label>
-                    <input type="text" name="username" id="username" required />
-                    <div class="username error"></div>
+                <button type="submit">Sign In</button>
+            </form>
 
-                    <label for="password">Password</label>
-                    <input type="password" name="password" id="password" required />
-                    <div class="password error"></div>
+            <p style="margin-top: 10px;">Don't have an account? <a href="/v1/signup">Sign Up</a></p>
 
-                    <div class="checkbox-row">
-                        <input type="checkbox" id="rememberMe" name="rememberMe" />
-                        <label for="rememberMe" style="margin: 0;">Remember me for 30 days</label>
-                        <div class="forgot-password">
-                            <a href="#">Forgot password?</a>
-                        </div>
-                    </div>
-
-                    <button type="submit">Sign in</button>
-                </form>
-
-                <div class="signup-row">
-                    <span>Don't have an account?</span>
-                    <a href="/v1/signup">Sign up</a>
-                </div>
+            <div class="social-login">
+                <button>Sign in with Google</button>
+                <button>Sign in with Facebook</button>
+                <button>Sign in with Twitter</button>
             </div>
         </div>
 
-        <div class="right-panel">
-            <div class="info-text">
-                <h2>Bring your ideas to life.</h2>
-                <p>Sign up for free and enjoy access to all features for 30 days. No credit card required!</p>
-            </div>
-        </div>
+        <div class="right-panel"></div>
     </div>
 
     <script>
@@ -278,7 +193,10 @@
                 const data = await res.json();
 
                 if (res.status === 200) {
+                    // Lưu token vào cookies và LocalStorage
+                    document.cookie = `access_token=${data.access_token}; path=/; max-age=86400; Secure`;
                     localStorage.setItem('access_token', data.access_token);
+
                     alert('Login successful!');
                     window.location.href = '/';
                 } else {

@@ -88,8 +88,13 @@ router.get('/:id', async (req, res) => {
  *         description: Danh mục đã được tạo
  */
 router.post('/', auth, async (req, res) => {
+    console.log('check user id', req.user.userId)
     try {
-        const newCategory = new Category(req.body);
+        const newCategory = new Category({
+            ...req.body,
+            createdBy: [req.user.userId]
+        });
+
         const savedCategory = await newCategory.save();
         res.status(201).json(savedCategory);
     } catch (err) {

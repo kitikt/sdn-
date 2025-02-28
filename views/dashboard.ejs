@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard | CubeFactory</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body,
+        html {
+            font-family: Arial, sans-serif;
+            height: 100%;
+            width: 100%;
+            background-color: #f4f4f4;
+        }
+
+        .navbar {
+            background-color: #055D4C;
+            padding: 15px 30px;
+            display: flex;
+            align-items: center;
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 15px;
+            font-size: 16px;
+        }
+
+        .navbar a:hover {
+            background-color: #04463A;
+            border-radius: 5px;
+        }
+
+        .container {
+            padding: 20px;
+        }
+
+        .content {
+            background: white;
+            padding: 20px;
+            min-height: 500px;
+            border-radius: 5px;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar">
+        <a href="/shop">Shop</a>
+        <a href="/products">Products</a>
+        <a href="/cart">Cart</a>
+        <a href="/orders">Orders</a>
+        <a href="/add-product">Add Product</a>
+        <a href="/admin-products">Admin Products</a>
+    </nav>
+
+    <div class="container">
+        <div class="content">
+            <h1>No Products Found!</h1>
+        </div>
+    </div>
+</body>
+
+</html>

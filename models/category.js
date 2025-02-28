@@ -9,7 +9,10 @@ const categorySchema = new mongoose.Schema({
     description: {
         type: String
     },
-    products: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Product' }]
+    products: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Product' }],
+    createdBy: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }]
+
+
 }, {
     timestamps: true
 });

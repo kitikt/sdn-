@@ -381,5 +381,17 @@ router.put('/user/:id', auth, isAdmin, updateUser);
  *         description: User not found
  */
 router.delete('/user/:id', auth, isAdmin, deleteUser);
+router.get('/verify-token', (req, res) => {
+    const token = req.cookies.access_token;
+    if (!token) {
+        return res.status(401).json({ valid: false, message: "No token provided" });
+    }
 
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        res.status(200).json({ valid: true, user: decoded });
+    } catch (error) {
+        res.status(401).json({ valid: false, message: "Invalid token" });
+    }
+});
 module.exports = router;

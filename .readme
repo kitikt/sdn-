@@ -1,0 +1,48 @@
+exercises/
+├─ .env
+├─ .gitignore
+├─ .readme
+├─ app.js
+├─ bin/
+│  └─ www
+├─ config/
+│  ├─ database.js
+│  └─ swagger.js
+├─ controller/
+│  ├─ adminController.js
+│  └─ authController.js
+├─ middleware/
+│  ├─ auth.js
+│  ├─ checkRole.js
+│  ├─ delay.js
+│  ├─ isAdmin.js
+│  └─ rbac.js
+├─ models/
+│  ├─ category.js
+│  ├─ product.js
+│  └─ user.js
+├─ mongo.js
+├─ package-lock.json
+├─ package.json
+├─ public/
+│  ├─ images/
+│  │  ├─ login.jpg
+│  │  └─ login2.jpg
+│  ├─ javascripts/
+│  └─ stylesheets/
+│     └─ style.css
+├─ routes/
+│  ├─ authRouter.js
+│  ├─ categoryRouter.js
+│  ├─ login.js
+│  └─ productRouter.js
+├─ service/
+│  ├─ adminService.js
+│  └─ authService.js
+└─ views/
+   ├─ aboutUs.ejs
+   ├─ contact.ejs
+   ├─ error.ejs
+   ├─ index.ejs
+   ├─ login.ejs
+   └─ signUp.ejs
