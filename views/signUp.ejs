@@ -3,57 +3,87 @@
 
 <head>
     <meta charset="UTF-8">
+    <title>Sign Up | CubeFactory</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign Up</title>
     <style>
-        body {
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body,
+        html {
             font-family: Arial, sans-serif;
+            height: 100%;
+            width: 100%;
+            background-color: #f4f4f4;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            background-color: #f4f4f4;
         }
 
-        .form-container {
-            background: white;
-            padding: 20px;
+        .container {
+            display: flex;
+            max-width: 900px;
+            width: 100%;
+            background-color: white;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
             border-radius: 10px;
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-            width: 300px;
+            overflow: hidden;
         }
 
-        h2 {
-            text-align: center;
-            color: #333;
+        .left-panel {
+            flex: 1;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .left-panel h1 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+
+        .left-panel p {
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
         }
 
         label {
-            font-weight: bold;
-            display: block;
             margin-top: 10px;
-            color: #555;
+            font-weight: bold;
+            color: #333;
         }
 
-        input {
-            width: 100%;
+        input[type="text"],
+        input[type="email"],
+        input[type="password"] {
             padding: 10px;
-            margin-top: 5px;
             border: 1px solid #ccc;
             border-radius: 5px;
+            margin-top: 5px;
         }
 
-        .error {
+        /* Các thẻ hiển thị lỗi */
+        .name.error,
+        .email.error,
+        .password.error {
             color: red;
             font-size: 12px;
             margin-top: 5px;
         }
 
-        button {
-            width: 100%;
-            background-color: #007bff;
+        button[type="submit"] {
+            background-color: #1a202c;
             color: white;
-            padding: 10px;
+            padding: 12px;
             border: none;
             border-radius: 5px;
             margin-top: 15px;
@@ -61,32 +91,86 @@
             font-size: 16px;
         }
 
-        button:hover {
-            background-color: #0056b3;
+        button[type="submit"]:hover {
+            background-color: #2d3748;
+        }
+
+        .social-login {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .social-login button {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: white;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .social-login button:hover {
+            background-color: #f1f1f1;
+        }
+
+        .right-panel {
+            flex: 1;
+            background: url('/images/signup.jpg') no-repeat center center;
+            background-size: cover;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .right-panel {
+                height: 300px;
+            }
         }
     </style>
 </head>
 
 <body>
-    <div class="form-container">
-        <h2>Sign Up</h2>
-        <form id="signup-form">
-            <label for="username">Username</label>
-            <input type="text" name="username" id="username" required />
-            <div class="username error"></div>
+    <div class="container">
+        <div class="left-panel">
+            <h1>Sign Up</h1>
+            <p>Let's get started with your 30 days free trial</p>
 
-            <label for="password">Password</label>
-            <input type="password" name="password" id="password" required />
-            <div class="password error"></div>
+            <form id="signup-form">
+                <label for="username">Username</label>
+                <input type="text" name="username" id="username" required />
+                <div class="username error"></div>
 
-            <button type="submit">Sign up</button>
-        </form>
+                <label for="password">Password</label>
+                <input type="password" name="password" id="password" required />
+                <div class="password error"></div>
+
+                <button type="submit">Sign Up</button>
+            </form>
+
+            <p style="margin-top: 10px;">Already have an account? <a href="/v1/login">Log In</a></p>
+
+            <div class="social-login">
+                <button>Sign up with Google</button>
+                <button>Sign up with Facebook</button>
+                <button>Sign up with Twitter</button>
+            </div>
+        </div>
+
+        <div class="right-panel"></div>
     </div>
 
     <script>
         const form = document.querySelector('#signup-form');
-        const usernameError = document.querySelector('.username.error');
-        const passwordError = document.querySelector('.password.error');
+        const usernameErrDiv = document.querySelector('.username.error');
+        const passwordErrDiv = document.querySelector('.password.error');
 
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -94,30 +178,33 @@
             const username = document.querySelector('#username').value;
             const password = document.querySelector('#password').value;
 
+            // Xóa các thông báo lỗi cũ
+            usernameErrDiv.textContent = '';
+            passwordErrDiv.textContent = '';
+
             try {
                 const res = await fetch('/v1/signup', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ username, password })
                 });
+
                 const data = await res.json();
+                console.log('Server response:', data);
 
-                // Xóa thông báo lỗi cũ
-                usernameError.textContent = '';
-                passwordError.textContent = '';
-
-                // TH1: Server trả về { errors: { username, password } }
+                // Nếu server trả về lỗi xác thực
                 if (data.errors) {
-                    usernameError.textContent = data.errors.username || '';
-                    passwordError.textContent = data.errors.password || '';
-                }
-                // TH2: Server trả về { error: "..." }
-                else if (data.error) {
-                    // Nếu bạn xem đây là lỗi liên quan đến password
-                    passwordError.textContent = data.error;
+                    if (data.errors.username && data.errors.username.includes("E11000")) {
+                        usernameErrDiv.textContent = 'Username exist';
+                    } else {
+                        usernameErrDiv.textContent = data.errors.username || '';
+                    }
+                    usernameErrDiv.textContent = data.errors.username || '';
+                    passwordErrDiv.textContent = data.errors.password || '';
+                } else if (data.error) {
+                    passwordErrDiv.textContent = data.error;
                 }
 
-                // Nếu đăng ký thành công
                 if (res.status === 201) {
                     alert('Signup successful!');
                     window.location.href = '/v1/login';
@@ -127,7 +214,6 @@
             }
         });
     </script>
-
 </body>
 
 </html>

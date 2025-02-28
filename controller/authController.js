@@ -8,17 +8,20 @@ const createUser = async (req, res) => {
     const result = await createUserService(username, password);
     if (!result.success) {
         if (result.error.name === 'ValidationError') {
+
             let errors = {};
             for (let field in result.error.errors) {
                 errors[field] = result.error.errors[field].message;
             }
-
-
             return res.status(400).json({ errors });
         } else {
+            if (result.error.message.includes("E11000")) {
+                result.error.message = "User already exist"
+            }
             return res.status(500).json({ error: result.error.message });
         }
     }
+
 
     return res.status(201).json({
         message: 'Signup successful!',
@@ -35,6 +38,12 @@ const handleLogin = async (req, res) => {
         if (data.EC) {
             return res.status(400).json({ error: data.EM });
         }
+        res.cookie('access_token', data.access_token, {
+            httpOnly: true, // Bảo mật, tránh XSS
+            secure: false, // Để `true` nếu dùng HTTPS
+            sameSite: 'Strict', // Ngăn chặn CSRF
+            maxAge: 15 * 60 * 1000, // 15 phút
+        });
 
         return res.status(200).json({
             access_token: data.access_token,

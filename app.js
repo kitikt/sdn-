@@ -25,8 +25,7 @@ app.use('/category', require('./routes/categoryRouter'));
 app.use('/product', require('./routes/productRouter'));
 app.use('/v1', require('./routes/authRouter'));
 app.get('/', (req, res) => res.render('index.ejs'));
-
-
+app.use('/dashboard', require('./routes/homeRouter'))
 app.use(function (req, res, next) {
   next(createError(404));
 });
@@ -49,5 +48,5 @@ app.set('port', port);
 var server = http.createServer(app);
 connection();
 server.listen(port, () => {
-  console.log(`🚀 Server đang chạy tại http://localhost:${port}`);
+  console.log(` Server đang chạy tại http://localhost:${port}`);
 });
