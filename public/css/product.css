@@ -5,70 +5,92 @@
     box-sizing: border-box;
 }
 
+
 body {
     font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
+    background-color: #1B1A18;
+    /* Màu nền cho toàn bộ trang */
+    color: #D6CEBD;
+    /* Màu chữ mặc định để dễ nhìn hơn */
 }
 
 /* Navigation Bar */
-nav {
+.navbar {
     background-color: #055D4C;
-    color: white;
-    padding: 15px 20px;
-    text-align: center;
+    padding: 15px 30px;
+    display: flex;
+    align-items: center;
 }
 
-nav a {
-    color: white;
+.navbar a {
+    color: #D6CEBD !important;
     text-decoration: none;
-    padding: 10px 20px;
-    margin: 0 10px;
-}
-
-nav a:hover {
-    background-color: #04463A;
-    border-radius: 5px;
-}
-
-/* Banner Section */
-.banner {
     position: relative;
-    width: 100%;
-    height: 600px;
+    padding: 10px 15px;
+    margin-right: 15px;
 }
 
-.banner img {
+/* Hiệu ứng gạch chân khi hover */
+.navbar a::after {
+    content: '';
+    display: block;
+    width: 0;
+    height: 3px;
+    background-color: #5AD439;
+    transition: width 0.3s ease-in-out;
+    position: absolute;
+    bottom: -3px;
+    left: 0;
+}
+
+.navbar a:hover::after,
+.navbar a.active::after {
+    /* Giữ trạng thái active */
+    width: 100%;
+}
+
+/* Căn phải phần Welcome và Logout */
+.navbar .user-info {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+/* Banner */
+.banner {
+    margin: 30px auto;
+    /* Đưa video vào giữa */
+    width: 80%;
+    /* Điều chỉnh kích thước nhỏ lại */
+    height: 300px;
+    /* Giảm chiều cao */
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+    /* Làm bo góc nhẹ */
+}
+
+.banner video {
     width: 100%;
     height: 100%;
     object-fit: cover;
-}
-
-.banner-content {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    color: white;
-    text-align: center;
-    font-size: 36px;
-    text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.7);
-}
-
-.container {
-    width: 100%;
-    padding: 20px;
 }
 
 /* Carousel Styles */
 .carousel-wrapper {
     position: relative;
     overflow: hidden;
+    width: 90%;
+    margin: auto;
 }
 
 .carousel {
     display: flex;
     gap: 20px;
-    transition: transform 0.5s ease;
+    transition: transform 0.5s ease-in-out;
 }
 
 .carousel-item {
@@ -78,6 +100,8 @@ nav a:hover {
     border-radius: 8px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     transition: all 0.3s ease;
+    text-align: center;
+    padding: 10px;
 }
 
 .carousel-item:hover {
@@ -88,17 +112,12 @@ nav a:hover {
     width: 100%;
     height: 200px;
     object-fit: cover;
-    border-radius: 8px 8px 0 0;
-}
-
-.product-info {
-    padding: 15px;
-    text-align: center;
+    border-radius: 8px;
 }
 
 .product-title {
     font-size: 1.25rem;
-    margin-bottom: 10px;
+    margin: 10px 0;
 }
 
 .product-price {
@@ -107,18 +126,14 @@ nav a:hover {
     margin-bottom: 10px;
 }
 
-.product-description {
-    color: #666;
-    font-size: 0.875rem;
-    margin-bottom: 15px;
-}
-
 .btn {
     background-color: #055D4C;
     color: white;
     padding: 10px 20px;
     text-decoration: none;
     border-radius: 5px;
+    display: inline-block;
+    margin-top: 10px;
 }
 
 .btn:hover {
@@ -153,10 +168,11 @@ nav a:hover {
     }
 
     .carousel {
-        flex-direction: column;
+        flex-direction: row;
+        overflow-x: auto;
     }
 
-    .right-panel {
+    .carousel-btn {
         display: none;
     }
 }
