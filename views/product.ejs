@@ -4,7 +4,6 @@
 <head>
     <meta charset="UTF-8">
     <title>Resonance</title>
-    <link rel="stylesheet" href="/css/navigation.css">
     <link rel="stylesheet" href="/css/product.css">
 
 </head>
@@ -19,63 +18,91 @@
             </video>
         </section>
         <!-- Main Content Section -->
-        <div class="container">
-            <!-- Left panel displaying product list in carousel style -->
-            <div class="left-panel">
-                <h1>All Products</h1>
-                <% if (prods && prods.length> 0) { %>
-                    <div class="carousel-wrapper">
-                        <div class="carousel">
-                            <% for (let product of prods) { %>
-                                <div class="carousel-item">
-                                    <div class="product-image">
-                                        <% if (product.image) { %>
-                                            <img src="<%= product.image %>" alt="<%= product.name %>">
-                                            <% } else { %>
-                                                <img src="/images/no-image.jpg" alt="No image available">
-                                                <% } %>
-                                    </div>
-                                    <div class="product-info">
-                                        <h2 class="product-title">
-                                            <%= product.name %>
-                                        </h2>
-                                        <p class="product-price">$ <%= product.price %>
-                                        </p>
-                                        <p class="product-description">
-                                            <%= product.description %>
-                                        </p>
-                                        <div class="actions">
-                                            <a href="/product/<%= product._id %>" class="btn">Details</a>
-                                            <form action="/cart/add" method="POST" style="display: inline;">
-                                                <input type="hidden" name="productId" value="<%= product._id %>" />
-                                                <button type="submit" class="btn">Add to Cart</button>
-                                            </form>
-                                        </div>
-                                    </div>
+        <h1 class="carousel-title">All Products</h1>
+
+        <div class="carousel-container"> <!-- Bọc tất cả bên trong -->
+            <div class="carousel-btn left" onclick="moveSlide(-1)">&#60;</div> <!-- Đặt ngoài wrapper -->
+
+            <div class="carousel-wrapper">
+                <div class="carousel">
+                    <% for (let product of prods) { %>
+                        <div class="carousel-item">
+                            <div class="product-image">
+                                <% if (product.image) { %>
+                                    <img src="<%= product.image %>" alt="<%= product.name %>">
+                                    <% } else { %>
+                                        <img src="/images/no-image.jpg" alt="No image available">
+                                        <% } %>
+                            </div>
+                            <div class="product-info">
+                                <h2 class="product-title">
+                                    <%= product.name %>
+                                </h2>
+                                <p class="product-price">$ <%= product.price %>
+                                </p>
+                                <p class="product-description">
+                                    <%= product.description %>
+                                </p>
+                                <div class="actions">
+                                    <a href="/product/<%= product._id %>" class="btn">Details</a>
+                                    <form action="/cart/add" method="POST" style="display: inline;">
+                                        <input type="hidden" name="productId" value="<%= product._id %>" />
+                                        <button type="submit" class="btn">Add to Cart</button>
+                                    </form>
                                 </div>
-                                <% } %>
+                            </div>
                         </div>
-                        <div class="carousel-btn left" onclick="moveSlide(-1)">&#60;</div>
-                        <div class="carousel-btn right" onclick="moveSlide(1)">&#62;</div>
-                    </div>
-                    <% } else { %>
-                        <h2>No Products Found!</h2>
                         <% } %>
+                </div>
             </div>
+
+            <div class="carousel-btn right" onclick="moveSlide(1)">&#62;</div> <!-- Đặt ngoài wrapper -->
         </div>
 
         <script>
-            let slideIndex = 0;
-            const carousel = document.querySelector('.carousel');
-            const items = document.querySelectorAll('.carousel-item');
+            document.addEventListener("DOMContentLoaded", () => {
+                const carousel = document.querySelector('.carousel');
+                const items = Array.from(document.querySelectorAll('.carousel-item'));
+                const totalItems = items.length;
 
-            function moveSlide(direction) {
-                slideIndex += direction;
-                if (slideIndex < 0) slideIndex = items.length - 1;
-                if (slideIndex >= items.length) slideIndex = 0;
-                const offset = -slideIndex * (items[0].offsetWidth + 20); // 20 is the gap
-                carousel.style.transform = `translateX(${offset}px)`;
-            }
+                // Nhân đôi item để tạo vòng lặp mượt
+                items.forEach(item => {
+                    let clone = item.cloneNode(true);
+                    carousel.appendChild(clone);
+                });
+
+                let slideIndex = 0;
+                let isTransitioning = false;
+
+                function moveSlide(direction) {
+                    if (isTransitioning) return;
+                    isTransitioning = true;
+
+                    const itemWidth = items[0].offsetWidth + 20; // 20 là khoảng cách giữa các item
+                    slideIndex += direction;
+
+                    carousel.style.transition = "transform 0.5s ease-in-out";
+                    carousel.style.transform = `translateX(${-slideIndex * itemWidth}px)`;
+
+                    // Khi đến cuối, nhảy về đầu ngay lập tức
+                    setTimeout(() => {
+                        if (slideIndex >= totalItems) {
+                            carousel.style.transition = "none";
+                            slideIndex = 0;
+                            carousel.style.transform = `translateX(${-slideIndex * itemWidth}px)`;
+                        } else if (slideIndex < 0) {
+                            carousel.style.transition = "none";
+                            slideIndex = totalItems - 1;
+                            carousel.style.transform = `translateX(${-slideIndex * itemWidth}px)`;
+                        }
+                        isTransitioning = false;
+                    }, 500); // Delay khớp với transition
+                }
+
+                document.querySelector('.carousel-btn.right').addEventListener('click', () => moveSlide(1));
+                document.querySelector('.carousel-btn.left').addEventListener('click', () => moveSlide(-1));
+            });
+
         </script>
 
 </body>

@@ -30,7 +30,7 @@ router.get('/signup', (req, res) => {
     if (req.cookies.access_token) {
         return res.redirect('/')
     }
-    res.render('login')
+    res.render('signup')
 });
 
 /**
