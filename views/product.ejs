@@ -3,59 +3,81 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Products</title>
-    <!-- Link đến file CSS -->
+    <title>Resonance</title>
     <link rel="stylesheet" href="/css/product.css">
-
 </head>
 
 <body>
     <%- include('./includes/navigation.ejs') %>
+
+        <!-- Banner Section -->
+        <section class="banner">
+            <img src="/images/login2.jpg" alt="Banner">
+            <div class="banner-content">
+                <h1>Welcome to Our Shop</h1>
+                <p>Explore our new collection of products</p>
+            </div>
+        </section>
+
+        <!-- Main Content Section -->
         <div class="container">
-            <!-- Left panel hiển thị danh sách sản phẩm -->
+            <!-- Left panel displaying product list in carousel style -->
             <div class="left-panel">
                 <h1>All Products</h1>
                 <% if (prods && prods.length> 0) { %>
-                    <div class="grid">
-                        <% for (let product of prods) { %>
-                            <article class="card product-item">
-                                <header class="card__header">
-                                    <h1 class="product__title">
-                                        <%= product.name %>
-                                    </h1>
-                                </header>
-                                <div class="card__image">
-                                    <% if (product.image) { %>
-                                        <img src="<%= product.image %>" alt="<%= product.name %>">
-                                        <% } else { %>
-                                            <img src="/images/no-image.jpg" alt="No image available">
-                                            <% } %>
+                    <div class="carousel-wrapper">
+                        <div class="carousel">
+                            <% for (let product of prods) { %>
+                                <div class="carousel-item">
+                                    <div class="product-image">
+                                        <% if (product.image) { %>
+                                            <img src="<%= product.image %>" alt="<%= product.name %>">
+                                            <% } else { %>
+                                                <img src="/images/no-image.jpg" alt="No image available">
+                                                <% } %>
+                                    </div>
+                                    <div class="product-info">
+                                        <h2 class="product-title">
+                                            <%= product.name %>
+                                        </h2>
+                                        <p class="product-price">$ <%= product.price %>
+                                        </p>
+                                        <p class="product-description">
+                                            <%= product.description %>
+                                        </p>
+                                        <div class="actions">
+                                            <a href="/product/<%= product._id %>" class="btn">Details</a>
+                                            <form action="/cart/add" method="POST" style="display: inline;">
+                                                <input type="hidden" name="productId" value="<%= product._id %>" />
+                                                <button type="submit" class="btn">Add to Cart</button>
+                                            </form>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="card__content">
-                                    <h2 class="product__price">$ <%= product.price %>
-                                    </h2>
-                                    <p class="product__description">
-                                        <%= product.description %>
-                                    </p>
-                                </div>
-                                <div class="card__actions">
-                                    <a href="/product/<%= product._id %>" class="btn">Details</a>
-                                    <form action="/cart/add" method="POST" style="display: inline;">
-                                        <input type="hidden" name="productId" value="<%= product._id %>" />
-                                        <button type="submit" class="btn">Add to Cart</button>
-                                    </form>
-                                </div>
-                            </article>
-                            <% } %>
+                                <% } %>
+                        </div>
+                        <div class="carousel-btn left" onclick="moveSlide(-1)">&#60;</div>
+                        <div class="carousel-btn right" onclick="moveSlide(1)">&#62;</div>
                     </div>
                     <% } else { %>
                         <h2>No Products Found!</h2>
                         <% } %>
             </div>
-
-            <!-- Right panel ảnh nền -->
-            <div class="right-panel"></div>
         </div>
+
+        <script>
+            let slideIndex = 0;
+            const carousel = document.querySelector('.carousel');
+            const items = document.querySelectorAll('.carousel-item');
+
+            function moveSlide(direction) {
+                slideIndex += direction;
+                if (slideIndex < 0) slideIndex = items.length - 1;
+                if (slideIndex >= items.length) slideIndex = 0;
+                const offset = -slideIndex * (items[0].offsetWidth + 20); // 20 is the gap
+                carousel.style.transform = `translateX(${offset}px)`;
+            }
+        </script>
 
 </body>
 

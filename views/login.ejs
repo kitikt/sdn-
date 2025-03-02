@@ -135,8 +135,18 @@
     </style>
 </head>
 <script>
-    if (localStorage.getItem('access_token')) {
-        window.location.href = '/';
+    // Kiểm tra cookie session nếu có
+    const cookies = document.cookie.split(';');
+    let sessionFound = false;
+
+    cookies.forEach(cookie => {
+        if (cookie.trim().startsWith('access_token=')) {
+            sessionFound = true;
+        }
+    });
+
+    if (sessionFound) {
+        window.location.href = '/'; // Nếu có access_token trong cookies, chuyển hướng tới trang chủ
     }
 </script>
 
@@ -193,9 +203,9 @@
                 const data = await res.json();
 
                 if (res.status === 200) {
-                    // Lưu token vào cookies và LocalStorage
+                    // Lưu token vào cookies 
                     document.cookie = `access_token=${data.access_token}; path=/; max-age=86400; Secure`;
-                    localStorage.setItem('access_token', data.access_token);
+                    // localStorage.setItem("access_token", data.access_token)
 
                     alert('Login successful!');
                     window.location.href = '/';

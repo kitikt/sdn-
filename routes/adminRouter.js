@@ -5,7 +5,7 @@ const isAdmin = require('../middleware/isAdmin');
 const { getAllUser } = require('../controller/adminController');
 
 router.get('/user', auth, isAdmin, getAllUser);
-
+// router.post()
 /**
  * @swagger
  * /v1/user/{id}:
