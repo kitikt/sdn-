@@ -1,0 +1,92 @@
+.navbar {
+
+    padding: 10px 10px;
+    display: flex;
+    align-items: center;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #1B1A18;
+    /* Màu nền cho toàn bộ trang */
+    color: #D6CEBD;
+    /* Màu chữ mặc định để dễ nhìn hơn */
+}
+
+.navbar a {
+    color: #D6CEBD;
+    text-decoration: none;
+    position: relative;
+    padding: 10px 15px;
+    margin-right: 15px;
+}
+
+/* Căn phải phần Welcome và Logout */
+.navbar .user-info {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+
+.navbar a::after {
+    content: '';
+    display: block;
+    width: 0;
+    height: 3px;
+    background-color: #84745c;
+    transition: width 0.3s ease-in-out;
+    position: absolute;
+    bottom: -3px;
+    left: 0;
+}
+
+/* Hiệu ứng hover */
+.navbar a:hover {
+    background-color: transparent !important;
+    color: #84745c !important;
+    /* Đảm bảo không đổi màu nền khi hover */
+}
+
+/* Khi hover hoặc active thì gạch chân */
+.navbar a:hover::after {
+    content: '';
+    display: block;
+    width: 100%;
+    height: 3px;
+    background-color: #84745c;
+    /* Màu underline khi hover hoặc active */
+    position: absolute;
+    bottom: -3px;
+    left: 0;
+}
+
+
+
+.navbar a.active::after {
+    content: '';
+    display: block;
+    width: 100%;
+    height: 3px;
+    background-color: #84745c;
+    /* Màu underline khi hover hoặc active */
+    position: absolute;
+    bottom: -3px;
+    left: 0;
+}
+
+
+/* Căn phải Welcome + Logout hoặc Login */
+.user-section {
+    margin-left: auto;
+    /* Đẩy Welcome và Logout sang phải */
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    /* Khoảng cách giữa các phần tử */
+}
+
+.user-section p {
+    color: rgb(241, 241, 241) !important;
+}

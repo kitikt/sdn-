@@ -1,7 +1,5 @@
 /* Basic Reset and Layout */
 * {
-    margin: 0;
-    padding: 0;
     box-sizing: border-box;
 }
 
@@ -15,56 +13,16 @@ body {
 }
 
 /* Navigation Bar */
-.navbar {
-    background-color: #055D4C;
-    padding: 15px 30px;
-    display: flex;
-    align-items: center;
-}
-
-.navbar a {
-    color: #D6CEBD !important;
-    text-decoration: none;
-    position: relative;
-    padding: 10px 15px;
-    margin-right: 15px;
-}
-
-/* Hiệu ứng gạch chân khi hover */
-.navbar a::after {
-    content: '';
-    display: block;
-    width: 0;
-    height: 3px;
-    background-color: #5AD439;
-    transition: width 0.3s ease-in-out;
-    position: absolute;
-    bottom: -3px;
-    left: 0;
-}
-
-.navbar a:hover::after,
-.navbar a.active::after {
-    /* Giữ trạng thái active */
-    width: 100%;
-}
-
-/* Căn phải phần Welcome và Logout */
-.navbar .user-info {
-    margin-left: auto;
-    display: flex;
-    align-items: center;
-    gap: 15px;
-}
 
 /* Banner */
 .banner {
     margin: 30px auto;
     /* Đưa video vào giữa */
-    width: 80%;
     /* Điều chỉnh kích thước nhỏ lại */
-    height: 300px;
     /* Giảm chiều cao */
+    width: 80%;
+    max-width: 1200px;
+    aspect-ratio: 16 / 9;
     overflow: hidden;
     display: flex;
     justify-content: center;
@@ -75,7 +33,7 @@ body {
 
 .banner video {
     width: 100%;
-    height: 100%;
+    height: 70%;
     object-fit: cover;
 }
 

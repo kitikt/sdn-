@@ -9,9 +9,11 @@ const router = express.Router();
 router.get('/logout', logoutController)
 router.get('/', authOptional, getProductsController);
 router.get('/admin/add-product', auth, isAdmin, (req, res) => {
-    res.render('editProduct', {
+    res.render('addProduct', {
         pageTitle: 'Add Product',
-        path: '/admin/add-product'
+        path: '/admin/add-product',
+
+
     });
 });
 // router.get('/:id' , getDetailController )

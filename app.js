@@ -10,7 +10,8 @@ var logger = require('morgan');
 var session = require('express-session')
 var swaggerUi = require('swagger-ui-express');
 var swaggerSpec = require('./config/swagger');
-var dashboardRouter = require('./routes/dashboardRouter')
+var shopRouter = require('./routes/shopRouter')
+require('dotenv').config();
 
 var app = express();
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
@@ -24,7 +25,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(session({
-  secret: '03bb0a95-7545-4e26-9214-a3717cb1e670', // Thay bằng chuỗi bí mật của bạn
+  secret: process.env.JWT_SECRET,
   resave: false,
   saveUninitialized: false,
   cookie: { secure: false } // Đặt secure: true nếu dùng HTTPS
@@ -32,7 +33,7 @@ app.use(session({
 app.use('/category', require('./routes/categoryRouter'));
 app.use('/product', require('./routes/productRouter'));
 app.use('/v1', require('./routes/authRouter'));
-app.use(dashboardRouter)
+app.use(shopRouter)
 
 
 app.use(function (req, res, next) {
