@@ -3,60 +3,231 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>Products</title>
-  <!-- Link đến file CSS -->
-  <link rel="stylesheet" href="/css/product.css">
+  <title>HomePage</title>
+  <style>
+    /* RESET */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
+    body,
+    html {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      width: 100%;
+      margin: 0;
+    }
+
+    /* Navigation Bar */
+    nav {
+      background-color: #055D4C;
+      color: white;
+      padding: 15px 20px;
+      text-align: center;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      padding: 10px 20px;
+      margin: 0 10px;
+    }
+
+    nav a:hover {
+      background-color: #04463A;
+      border-radius: 5px;
+    }
+
+    /* Banner Section */
+    .banner {
+      position: relative;
+      width: 100%;
+      height: 600px;
+      /* Chiều cao banner */
+      overflow: hidden;
+    }
+
+    .banner img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .banner-content {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: white;
+      text-align: center;
+      font-size: 48px;
+      font-weight: bold;
+      text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.7);
+    }
+
+    .banner-content p {
+      margin-top: 10px;
+      font-size: 20px;
+      font-weight: normal;
+    }
+
+    /* Container cho phần carousel */
+    .container {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+
+    /* Carousel Styles */
+    .carousel-title {
+      margin-bottom: 20px;
+      font-size: 2rem;
+      text-align: center;
+      color: #333;
+    }
+
+    .carousel {
+      display: flex;
+      overflow-x: auto;
+      /* Cho phép cuộn ngang */
+      gap: 20px;
+      scroll-snap-type: x mandatory;
+      /* Cho snap khi cuộn */
+      padding: 20px 0;
+    }
+
+    .carousel-item {
+      flex: 0 0 auto;
+      width: 250px;
+      /* Chiều rộng mỗi item */
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+      scroll-snap-align: start;
+      /* Snap vào đầu */
+    }
+
+    .carousel-item:hover {
+      box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .product-image img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      border-radius: 8px 8px 0 0;
+    }
+
+    .product-info {
+      padding: 15px;
+      text-align: center;
+    }
+
+    .product-title {
+      font-size: 1.25rem;
+      margin-bottom: 10px;
+      color: #333;
+    }
+
+    .product-price {
+      color: #055D4C;
+      font-size: 1rem;
+      margin-bottom: 10px;
+      font-weight: bold;
+    }
+
+    .product-description {
+      color: #666;
+      font-size: 0.875rem;
+      margin-bottom: 15px;
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      margin-top: 10px;
+    }
+
+    .btn {
+      background-color: #055D4C;
+      color: white;
+      padding: 10px 20px;
+      text-decoration: none;
+      border-radius: 5px;
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn:hover {
+      background-color: #04463A;
+    }
+
+    /* Ẩn scrollbar ngang của carousel (tùy chọn) */
+    .carousel::-webkit-scrollbar {
+      display: none;
+    }
+  </style>
 </head>
 
 <body>
+  <!-- Navigation -->
   <%- include('./includes/navigation.ejs') %>
+
+    <!-- Banner Section -->
+    <section class="banner">
+      <img src="/images/banner.jpg" alt="Banner Image" />
+      <div class="banner-content">
+        DOLENGA WEAR
+        <p>Explore our new collection of products</p>
+      </div>
+    </section>
+
+    <!-- Container chính -->
     <div class="container">
-      <!-- Left panel hiển thị danh sách sản phẩm -->
-      <div class="left-panel">
-        <h1>All Products</h1>
+      <!-- Tiêu đề carousel -->
+      <h2 class="carousel-title">Bestsellers</h2>
+
+      <!-- Carousel các sản phẩm -->
+      <div class="carousel">
         <% if (prods && prods.length> 0) { %>
-          <div class="grid">
-            <% for (let product of prods) { %>
-              <article class="card product-item">
-                <header class="card__header">
-                  <h1 class="product__title">
-                    <%= product.name %>
-                  </h1>
-                </header>
-                <div class="card__image">
-                  <% if (product.image) { %>
-                    <img src="<%= product.image %>" alt="<%= product.name %>">
-                    <% } else { %>
-                      <img src="/images/no-image.jpg" alt="No image available">
-                      <% } %>
-                </div>
-                <div class="card__content">
-                  <h2 class="product__price">$ <%= product.price %>
-                  </h2>
-                  <p class="product__description">
-                    <%= product.description %>
-                  </p>
-                </div>
-                <div class="card__actions">
+          <% for (let product of prods) { %>
+            <div class="carousel-item">
+              <div class="product-image">
+                <% if (product.image) { %>
+                  <img src="<%= product.image %>" alt="<%= product.name %>">
+                  <% } else { %>
+                    <img src="/images/no-image.jpg" alt="No image available">
+                    <% } %>
+              </div>
+              <div class="product-info">
+                <h3 class="product-title">
+                  <%= product.name %>
+                </h3>
+                <p class="product-price">$ <%= product.price %>
+                </p>
+                <p class="product-description">
+                  <%= product.description %>
+                </p>
+                <div class="actions">
                   <a href="/product/<%= product._id %>" class="btn">Details</a>
                   <form action="/cart/add" method="POST" style="display: inline;">
-                    <input type="hidden" name="productId" value="<%= product._id %>" />
+                    <input type="hidden" name="productId" value="<%= product._id %>">
                     <button type="submit" class="btn">Add to Cart</button>
                   </form>
                 </div>
-              </article>
-              <% } %>
-          </div>
-          <% } else { %>
-            <h2>No Products Found!</h2>
+              </div>
+            </div>
             <% } %>
+              <% } else { %>
+                <p style="font-size: 1rem; color: #333;">No Products Found!</p>
+                <% } %>
       </div>
-
-      <!-- Right panel ảnh nền -->
-      <div class="right-panel"></div>
     </div>
-
 </body>
 
 </html>

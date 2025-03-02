@@ -26,7 +26,12 @@ const router = express.Router();
  *       200:
  *         description: Trang signup hiển thị thành công
  */
-router.get('/signup', (req, res) => res.render('signUp.ejs'));
+router.get('/signup', (req, res) => {
+    if (req.cookies.access_token) {
+        return res.redirect('/')
+    }
+    res.render('login')
+});
 
 /**
  * @swagger
@@ -82,7 +87,12 @@ router.post('/signup', createUser);
  *       200:
  *         description: Trang login hiển thị thành công
  */
-router.get('/login', (req, res) => res.render('login.ejs'));
+router.get('/login', (req, res) => {
+    if (req.cookies.access_token) {
+        return res.redirect('/')
+    }
+    res.render('login')
+});
 
 /**
  * @swagger

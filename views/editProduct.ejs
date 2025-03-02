@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>
+        <%= pageTitle %>
+    </title>
+    <style>
+        /* Reset styling */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            font-size: 2rem;
+        }
+
+        .form-control {
+            margin-bottom: 15px;
+        }
+
+        label {
+            font-size: 1rem;
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        textarea,
+        select,
+        input[type="file"] {
+            width: 100%;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-size: 1rem;
+        }
+
+        textarea {
+            resize: vertical;
+        }
+
+        button {
+            padding: 10px 15px;
+            font-size: 1rem;
+            background-color: #2D3748;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #4A5568;
+        }
+
+        /* Form field styles */
+        input[type="file"] {
+            border: 1px solid #ccc;
+            padding: 10px;
+        }
+
+        select {
+            font-size: 1rem;
+            padding: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <%- include('./includes/navigation.ejs') %>
+
+        <div class="container">
+            <h1>Add New Product</h1>
+            <form action="/admin/add-product" method="POST" enctype="multipart/form-data">
+                <!-- Product Thumbnail -->
+                <div class="form-control">
+                    <label for="thumbnail">Thumbnail</label>
+                    <input type="file" name="thumbnail" id="thumbnail" accept="image/png, image/jpeg, image/jpg"
+                        required>
+                </div>
+
+                <!-- Product Name -->
+                <div class="form-control">
+                    <label for="title">Product Name</label>
+                    <input type="text" name="title" id="title" placeholder="Enter product name" required>
+                </div>
+
+                <!-- Description -->
+                <div class="form-control">
+                    <label for="description">Description</label>
+                    <textarea name="description" id="description" placeholder="Enter description" required></textarea>
+                </div>
+
+                <!-- Price -->
+                <div class="form-control">
+                    <label for="price">Price</label>
+                    <input type="number" name="price" id="price" placeholder="Enter price" step="0.01" required>
+                </div>
+
+                <!-- Status -->
+                <div class="form-control">
+                    <label for="status">Status</label>
+                    <select name="status" id="status">
+                        <option value="published">Published</option>
+                        <option value="draft">Draft</option>
+                    </select>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit">Add Product</button>
+            </form>
+        </div>
+</body>
+
+</html>

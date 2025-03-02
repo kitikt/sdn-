@@ -22,13 +22,12 @@
 <header class="main-header">
     <nav class="navbar">
         <a href="/">Shop</a>
-        <a href="/product">Products</a>
         <a href="/cart">Cart</a>
         <a href="/orders">Orders</a>
 
 
         <% if (user && user.role==='admin' ) { %>
-            <a href="/add-product">Add Product</a>
+            <a href="/admin/add-product">Add Product</a>
             <a href="/admin-products">Admin Products</a>
             <% } %>
                 <% if (user) { %>

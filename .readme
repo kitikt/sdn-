@@ -10,13 +10,14 @@ exercises/
 │  └─ swagger.js
 ├─ controller/
 │  ├─ adminController.js
-│  └─ authController.js
+│  ├─ authController.js
+│  └─ shopController.js
+├─ Luxury brand for men clothes _ Logo design contest.jpg
 ├─ middleware/
 │  ├─ auth.js
-│  ├─ checkRole.js
-│  ├─ delay.js
+│  ├─ authOptional.js
 │  ├─ isAdmin.js
-│  └─ rbac.js
+│  └─ upload.js
 ├─ models/
 │  ├─ category.js
 │  ├─ product.js
@@ -25,24 +26,48 @@ exercises/
 ├─ package-lock.json
 ├─ package.json
 ├─ public/
+│  ├─ css/
+│  │  └─ product.css
 │  ├─ images/
-│  │  ├─ login.jpg
-│  │  └─ login2.jpg
+│  │  ├─ login2.jpg
+│  │  ├─ logo.jpg
+│  │  ├─ signup.jpg
+│  │  └─ signup1.jpg
 │  ├─ javascripts/
-│  └─ stylesheets/
-│     └─ style.css
+│  ├─ stylesheets/
+│  │  └─ style.css
+│  └─ uploads/
+│     ├─ image-1740718665301-216733278.png
+│     ├─ image-1740720374525-982394355.png
+│     ├─ image-1740723044029-77329242.png
+│     ├─ image-1740723044866-577732964.png
+│     ├─ image-1740723050875-954927379.png
+│     ├─ image-1740723051656-935489122.png
+│     ├─ image-1740723052432-392374933.png
+│     ├─ image-1740723053231-438725231.png
+│     ├─ image-1740835199667-261544498.png
+│     ├─ image-1740835200451-85544023.png
+│     ├─ image-1740835201278-187553573.png
+│     └─ image-1740835202016-440890471.png
 ├─ routes/
+│  ├─ adminRouter.js
 │  ├─ authRouter.js
 │  ├─ categoryRouter.js
-│  ├─ login.js
+│  ├─ dashboardRouter.js
 │  └─ productRouter.js
 ├─ service/
 │  ├─ adminService.js
-│  └─ authService.js
+│  ├─ authService.js
+│  └─ shopService.js
 └─ views/
    ├─ aboutUs.ejs
    ├─ contact.ejs
+   ├─ dashboard.ejs
+   ├─ editProduct.ejs
    ├─ error.ejs
+   ├─ includes/
+   │  └─ navigation.ejs
    ├─ index.ejs
    ├─ login.ejs
+   ├─ product.ejs
    └─ signUp.ejs

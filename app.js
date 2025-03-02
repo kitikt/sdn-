@@ -11,7 +11,6 @@ var session = require('express-session')
 var swaggerUi = require('swagger-ui-express');
 var swaggerSpec = require('./config/swagger');
 var dashboardRouter = require('./routes/dashboardRouter')
-var { logoutController } = require('./controller/shopController');  // Import logoutController từ controller
 
 var app = express();
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
@@ -35,7 +34,6 @@ app.use('/product', require('./routes/productRouter'));
 app.use('/v1', require('./routes/authRouter'));
 app.use(dashboardRouter)
 
-app.get('/logout', logoutController); // Gọi logoutController ở đây
 
 app.use(function (req, res, next) {
   next(createError(404));

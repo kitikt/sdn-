@@ -1,4 +1,4 @@
-const { getAllProducts } = require("../service/shopService");
+const { getAllProducts, createProductService } = require("../service/shopService");
 
 
 
@@ -16,6 +16,24 @@ const getProductsController = async (req, res) => {
         next(err);
     }
 };
+
+
+const createProductController = async (req, res) => {
+    try {
+        const { name, title, image, price, description, categoryId } = req.body;
+
+        // Thêm sản phẩm mới vào cơ sở dữ liệu
+        const newProduct = await createProductService({ name, title, image, price, description, categoryId });
+
+        // Redirect đến trang sản phẩm sau khi tạo thành công
+        res.redirect('/product'); // Hoặc redirect đến trang quản lý sản phẩm
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).send('Error adding product');
+    }
+};
+
 const logoutController = (req, res) => {
     if (req.session) {
         res.clearCookie('connect.sid');
@@ -35,4 +53,4 @@ const logoutController = (req, res) => {
 };
 
 
-module.exports = { getProductsController, logoutController }
+module.exports = { getProductsController, logoutController, createProductController }

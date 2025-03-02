@@ -135,11 +135,6 @@
     </style>
 </head>
 <script>
-    // Kiểm tra token trong localStorage
-    if (localStorage.getItem('access_token')) {
-        window.location.href = '/'; // Nếu có access_token trong localStorage, chuyển hướng tới trang chủ
-    }
-
     // Kiểm tra cookie session nếu có
     const cookies = document.cookie.split(';');
     let sessionFound = false;
@@ -154,7 +149,6 @@
         window.location.href = '/'; // Nếu có access_token trong cookies, chuyển hướng tới trang chủ
     }
 </script>
-
 
 <body>
     <div class="container">
@@ -209,9 +203,9 @@
                 const data = await res.json();
 
                 if (res.status === 200) {
-                    // Lưu token vào cookies và LocalStorage
+                    // Lưu token vào cookies 
                     document.cookie = `access_token=${data.access_token}; path=/; max-age=86400; Secure`;
-                    localStorage.setItem('access_token', data.access_token);
+                    // localStorage.setItem("access_token", data.access_token)
 
                     alert('Login successful!');
                     window.location.href = '/';
