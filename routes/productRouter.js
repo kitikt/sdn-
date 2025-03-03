@@ -3,6 +3,7 @@ const Product = require('../models/product');
 const Category = require('../models/category');
 const auth = require('../middleware/auth');
 const upload = require('../middleware/upload');
+const authOptional = require('../middleware/authOptional');
 const router = express.Router();
 
 /**
@@ -23,7 +24,7 @@ const router = express.Router();
  *       200:
  *         description: Trả về danh sách sản phẩm
  */
-router.get('/', async (req, res) => {
+router.get('/', authOptional, async (req, res) => {
     try {
         const products = await Product.find().populate("categoryId", "name");
         return res.render('product', { prods: products, path: '/products' });

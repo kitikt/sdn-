@@ -29,26 +29,31 @@ exercises/
 │  ├─ css/
 │  │  └─ product.css
 │  ├─ images/
+│  │  ├─ login1.jpg
 │  │  ├─ login2.jpg
 │  │  ├─ logo.jpg
+│  │  ├─ Luxury brand for men clothes _ Logo design contest.jpg
 │  │  ├─ signup.jpg
 │  │  └─ signup1.jpg
 │  ├─ javascripts/
 │  ├─ stylesheets/
 │  │  └─ style.css
-│  └─ uploads/
-│     ├─ image-1740718665301-216733278.png
-│     ├─ image-1740720374525-982394355.png
-│     ├─ image-1740723044029-77329242.png
-│     ├─ image-1740723044866-577732964.png
-│     ├─ image-1740723050875-954927379.png
-│     ├─ image-1740723051656-935489122.png
-│     ├─ image-1740723052432-392374933.png
-│     ├─ image-1740723053231-438725231.png
-│     ├─ image-1740835199667-261544498.png
-│     ├─ image-1740835200451-85544023.png
-│     ├─ image-1740835201278-187553573.png
-│     └─ image-1740835202016-440890471.png
+│  ├─ uploads/
+│  │  ├─ image-1740718665301-216733278.png
+│  │  ├─ image-1740720374525-982394355.png
+│  │  ├─ image-1740723044029-77329242.png
+│  │  ├─ image-1740723044866-577732964.png
+│  │  ├─ image-1740723050875-954927379.png
+│  │  ├─ image-1740723051656-935489122.png
+│  │  ├─ image-1740723052432-392374933.png
+│  │  ├─ image-1740723053231-438725231.png
+│  │  ├─ image-1740835199667-261544498.png
+│  │  ├─ image-1740835200451-85544023.png
+│  │  ├─ image-1740835201278-187553573.png
+│  │  └─ image-1740835202016-440890471.png
+│  └─ video/
+│     ├─ banner.mp4
+│     └─ bannervideoedit.mp4
 ├─ routes/
 │  ├─ adminRouter.js
 │  ├─ authRouter.js
@@ -61,6 +66,8 @@ exercises/
 │  └─ shopService.js
 └─ views/
    ├─ aboutUs.ejs
+   ├─ admin/
+   │  └─ adminEditProduct.js
    ├─ contact.ejs
    ├─ dashboard.ejs
    ├─ editProduct.ejs

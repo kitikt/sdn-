@@ -1,162 +1,191 @@
 /* Basic Reset and Layout */
 * {
-    margin: 0;
-    padding: 0;
     box-sizing: border-box;
 }
 
+
 body {
     font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
+    background-color: #1B1A18;
+
+    color: #D6CEBD;
+
 }
 
-/* Navigation Bar */
-nav {
-    background-color: #055D4C;
-    color: white;
-    padding: 15px 20px;
-    text-align: center;
-}
 
-nav a {
-    color: white;
-    text-decoration: none;
-    padding: 10px 20px;
-    margin: 0 10px;
-}
 
-nav a:hover {
-    background-color: #04463A;
-    border-radius: 5px;
-}
-
-/* Banner Section */
+/* Banner */
 .banner {
-    position: relative;
-    width: 100%;
-    height: 600px;
+    margin: 30px auto;
+
+    width: 80%;
+    max-width: 1200px;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+    /* Làm bo góc nhẹ */
 }
 
-.banner img {
+.banner video {
     width: 100%;
-    height: 100%;
+    height: 80%;
     object-fit: cover;
 }
 
-.banner-content {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    color: white;
-    text-align: center;
-    font-size: 36px;
-    text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.7);
-}
-
-.container {
-    width: 100%;
-    padding: 20px;
-}
-
 /* Carousel Styles */
+.carousel-title {
+    text-align: center;
+    font-size: 2rem;
+    color: #D6CEBD;
+    /* Màu chữ */
+    margin-top: 50px;
+    margin-bottom: 20px;
+}
+
+.carousel-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 1200px;
+    margin: auto;
+}
+
+/* Khung chứa slider */
 .carousel-wrapper {
     position: relative;
     overflow: hidden;
+    width: 90%;
+    padding: 20px 0;
 }
 
+/* Thanh chứa các sản phẩm */
 .carousel {
     display: flex;
     gap: 20px;
-    transition: transform 0.5s ease;
+    transition: transform 0.5s ease-in-out;
 }
 
+/* Các item trong slider */
 .carousel-item {
     flex: 0 0 auto;
     width: 250px;
-    background-color: #fff;
-    border-radius: 8px;
+    background-color: #1B1A18;
+    border: 1px solid #D6CEBD;
+    border-radius: 10px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     transition: all 0.3s ease;
+    text-align: center;
+    padding: 10px;
 }
 
 .carousel-item:hover {
-    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+    transform: scale(1.05);
+    /* Phóng to nhẹ */
+    border: 1px solid #f0d29a;
+    /* Viền sáng hơn */
+    box-shadow: 0 10px 20px rgba(255, 255, 255, 0.2);
+    /* Hiệu ứng bóng */
 }
 
+/* Hình ảnh sản phẩm */
 .carousel-item img {
     width: 100%;
     height: 200px;
     object-fit: cover;
-    border-radius: 8px 8px 0 0;
+    border-radius: 10px;
 }
 
-.product-info {
-    padding: 15px;
-    text-align: center;
-}
-
+/* Tiêu đề sản phẩm */
 .product-title {
     font-size: 1.25rem;
-    margin-bottom: 10px;
+    margin: 10px 0;
 }
 
+/* Giá sản phẩm */
 .product-price {
-    color: #6d0404;
+    color: #f0d29a;
     font-size: 1rem;
     margin-bottom: 10px;
 }
 
-.product-description {
-    color: #666;
-    font-size: 0.875rem;
-    margin-bottom: 15px;
-}
-
+/* Nút Details và Add to Cart */
 .btn {
-    background-color: #055D4C;
-    color: white;
+    background-color: #1B1A18;
+    color: #D6CEBD;
     padding: 10px 20px;
     text-decoration: none;
     border-radius: 5px;
+    display: inline-block;
+    margin-top: 10px;
+    border: none;
+    outline: none;
+    cursor: pointer;
 }
 
+/* btn của add to cart và detail */
 .btn:hover {
-    background-color: #04463A;
+    background-color: #1B1A18;
 }
 
-/* Navigation buttons */
+/* ========== CĂN CHỈNH NÚT ĐIỀU HƯỚNG (< >) ========== */
+
+/* Nút điều hướng */
 .carousel-btn {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    background-color: rgba(0, 0, 0, 0.5);
-    color: white;
+    color: #fff;
     font-size: 2rem;
-    padding: 10px;
+    padding: 15px;
     cursor: pointer;
-    border-radius: 50%;
+    background: none;
+    /* Xóa nền */
+    border: none;
+    /* Xóa viền */
+    outline: none;
+    /* Xóa hiệu ứng focus */
+    z-index: 20;
+    transition: color 0.3s ease-in-out;
 }
 
+.carousel-btn:hover {
+    color: #e7ca8c;
+    /* Chỉ thay đổi màu mà không có viền */
+    background: none;
+    /* Không đổi nền */
+    border: none;
+    /* Đảm bảo không có viền */
+}
+
+/* Đẩy nút sang hai bên ngoài slider */
 .carousel-btn.left {
-    left: 10px;
+    left: -60px;
 }
 
 .carousel-btn.right {
-    right: 10px;
+    background-color: #1B1A18;
+
+    right: -60px;
 }
 
-/* Mobile adjustments */
+
+/* ========== RESPONSIVE ========== */
 @media (max-width: 768px) {
     .container {
         flex-direction: column;
     }
 
     .carousel {
-        flex-direction: column;
+        flex-direction: row;
+        overflow-x: auto;
     }
 
-    .right-panel {
+    .carousel-btn {
         display: none;
     }
 }

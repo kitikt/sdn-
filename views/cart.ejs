@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Your Cart</title>
+
+    <style>
+        .cart-container {
+            max-width: 800px;
+            margin: auto;
+            padding: 20px;
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .cart-item img {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+
+        .cart-total {
+            font-size: 20px;
+            font-weight: bold;
+            text-align: right;
+            margin-top: 20px;
+        }
+
+        .btn {
+            background: red;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .btn:hover {
+            background: darkred;
+        }
+    </style>
+</head>
+
+<body>
+    <%- include('./includes/navigation.ejs') %>
+        <h1>Your Shopping Cart</h1>
+
+        <div class="cart-container">
+            <% if (cart.length> 0) { %>
+                <% cart.forEach(product=> { %>
+                    <div class="cart-item">
+                        <img src="<%= product.image %>" alt="<%= product.name %>">
+                        <div>
+                            <h3>
+                                <%= product.name %>
+                            </h3>
+                            <p>Price: $<%= product.price || 'N/A' %> | Quantity: <%= product.quantity %>
+                            </p>
+                            </p>
+                        </div>
+                        <form action="/cart/remove" method="POST">
+                            <input type="hidden" name="productId" value="<%= product.productId %>">
+                            <button class="btn" type="submit">Remove</button>
+                        </form>
+                    </div>
+                    <% }) %>
+                        <div class="cart-total">Total: $<%= totalPrice %>
+                        </div>
+                        <% } else { %>
+                            <p>Your cart is empty.</p>
+                            <% } %>
+        </div>
+</body>
+
+</html>

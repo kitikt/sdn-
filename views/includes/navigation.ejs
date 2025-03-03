@@ -1,60 +1,68 @@
 <div class="backdrop"></div>
+<link rel="stylesheet" href="/css/navigation.css">
 <style>
-    .navbar {
-        background-color: #055D4C;
-        padding: 15px 30px;
-        display: flex;
-        align-items: center;
-    }
 
-    .navbar a {
-        color: white;
-        text-decoration: none;
-        padding: 10px 15px;
-        font-size: 16px;
-    }
-
-    .navbar a:hover {
-        background-color: #04463A;
-        border-radius: 5px;
-    }
 </style>
 <header class="main-header">
     <nav class="navbar">
-        <a href="/">Shop</a>
-        <a href="/cart">Cart</a>
-        <a href="/orders">Orders</a>
+        <!-- Mục bên trái -->
+        <div class="nav-links">
+            <a href="/">Shop</a>
+            <a href="/cart">Cart</a>
+            <a href="/orders">Orders</a>
+            <% if (user && user.role==='admin' ) { %>
+                <a href="/admin/add-product">Add Product</a>
+                <a href="/admin/edit-product">Admin Products</a>
+                <% } %>
+        </div>
 
-
-        <% if (user && user.role==='admin' ) { %>
-            <a href="/admin/add-product">Add Product</a>
-            <a href="/admin-products">Admin Products</a>
-            <% } %>
-                <% if (user) { %>
-                    <p>Welcome, <%= user.username %>!</p> <!-- Hiển thị tên người dùng -->
-                    <a href="/logout" class="logout-button" onclick="logout()">Logout</a>
-                    <% } else { %>
-
-                        <a href="/v1/login">Login</a> <!-- Nếu không có người dùng, hiển thị link đăng nhập -->
-                        <% } %>
+        <!-- Mục bên phải -->
+        <div class="user-section">
+            <% if (user) { %>
+                <p>Welcome, <%= user.username %>!</p>
+                <a class="nav-links" href="/logout" class="logout-button" onclick="logout()">Logout</a>
+                <% } else { %>
+                    <a href="/v1/login">Login</a> <!-- Nếu không có người dùng, hiển thị link đăng nhập -->
+                    <% } %>
+        </div>
     </nav>
-
-
 </header>
 <script>
     function logout() {
-        // Xóa token trong localStorage
         localStorage.removeItem('access_token');
-
-        // Gửi yêu cầu logout đến backend để xóa session và cookie
         fetch('/logout', {
             method: 'GET',
-            credentials: 'same-origin' // Đảm bảo cookie được gửi cùng với yêu cầu
+            credentials: 'same-origin'
         }).then(response => {
-            window.location.href = '/'; // Sau khi xóa session và cookie, chuyển hướng về trang chủ
+            window.location.href = '/';
         }).catch(error => {
             console.error('Logout failed:', error);
-            window.location.href = '/'; // Nếu lỗi, chuyển hướng về trang chủ
+            window.location.href = '/';
         });
     }
+
+    // ✅ Thêm đoạn script cập nhật số lượng sản phẩm trong Cart
+    async function updateCartCount() {
+        try {
+            const response = await fetch("/cart/items");
+            const data = await response.json();
+            const cartCount = data.cart.reduce((sum, item) => sum + item.quantity, 0);
+            document.getElementById("cart-count").innerText = cartCount;
+        } catch (error) {
+            console.error("Error fetching cart count:", error);
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const currentPath = window.location.pathname;
+        const navLinks = document.querySelectorAll(".navbar a");
+
+        navLinks.forEach(link => {
+            if (link.getAttribute("href") === currentPath) {
+                link.classList.add("active");
+            }
+        });
+
+        updateCartCount(); // ✅ Gọi ngay khi load trang để cập nhật số lượng sản phẩm
+    });
 </script>

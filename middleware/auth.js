@@ -3,7 +3,7 @@ require('dotenv').config();
 
 const white_lists = ["/signup", "/login", "/refresh"];
 
-const auth = (req, res, next) => {
+const auth = async (req, res, next) => {
     console.log('🔹 Check req.originalUrl:', req.originalUrl);
 
     // Nếu URL thuộc whitelist, bỏ qua xác thực
@@ -33,19 +33,46 @@ const auth = (req, res, next) => {
     }
 
     try {
-        // Giải mã token
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         req.user = decoded;
         res.locals.user = req.user;
-        console.log("✅ Decoded Token:", res.locals.user);
-
-        next();
+        return next();
     } catch (error) {
-        return res.status(401).json({
-            message: "Invalid token",
-            error: error.message
-        });
+        if (error.name === "TokenExpiredError") {
+            console.log("🔄 Access Token expired, trying to refresh...");
+
+            const refreshToken = req.cookies.refresh_token;
+            if (!refreshToken) {
+                return res.status(401).json({ message: "Access token expired, no refresh token available" });
+            }
+
+            // Gọi trực tiếp service để làm mới Access Token
+            const refreshData = await refreshTokenService(refreshToken);
+
+            if (refreshData.EC === 0) {
+                const newAccessToken = refreshData.access_token;
+
+                res.cookie('access_token', newAccessToken, {
+                    httpOnly: true,
+                    secure: false,
+                    sameSite: 'Strict',
+                    maxAge: 15 * 60 * 1000, // 15 phút
+                });
+
+                const newDecoded = jwt.verify(newAccessToken, process.env.JWT_SECRET);
+                req.user = newDecoded;
+                res.locals.user = req.user;
+
+                console.log("✅ New Access Token issued:", newAccessToken);
+                return next();
+            } else {
+                return res.status(403).json({ message: refreshData.EM });
+            }
+        } else {
+            return res.status(401).json({ message: "Invalid token", error: error.message });
+        }
     }
 };
+
 
 module.exports = auth;
