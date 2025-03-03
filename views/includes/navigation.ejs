@@ -12,7 +12,7 @@
             <a href="/orders">Orders</a>
             <% if (user && user.role==='admin' ) { %>
                 <a href="/admin/add-product">Add Product</a>
-                <a href="/admin-products">Admin Products</a>
+                <a href="/admin/edit-product">Admin Products</a>
                 <% } %>
         </div>
 
@@ -27,33 +27,42 @@
         </div>
     </nav>
 </header>
-
 <script>
     function logout() {
-        // Xóa token trong localStorage
         localStorage.removeItem('access_token');
-
-        // Gửi yêu cầu logout đến backend để xóa session và cookie
         fetch('/logout', {
             method: 'GET',
-            credentials: 'same-origin' // Đảm bảo cookie được gửi cùng với yêu cầu
+            credentials: 'same-origin'
         }).then(response => {
-            window.location.href = '/'; // Sau khi xóa session và cookie, chuyển hướng về trang chủ
+            window.location.href = '/';
         }).catch(error => {
             console.error('Logout failed:', error);
-            window.location.href = '/'; // Nếu lỗi, chuyển hướng về trang chủ
+            window.location.href = '/';
         });
     }
-</script>
-<script>
+
+    // ✅ Thêm đoạn script cập nhật số lượng sản phẩm trong Cart
+    async function updateCartCount() {
+        try {
+            const response = await fetch("/cart/items");
+            const data = await response.json();
+            const cartCount = data.cart.reduce((sum, item) => sum + item.quantity, 0);
+            document.getElementById("cart-count").innerText = cartCount;
+        } catch (error) {
+            console.error("Error fetching cart count:", error);
+        }
+    }
+
     document.addEventListener("DOMContentLoaded", function () {
         const currentPath = window.location.pathname;
         const navLinks = document.querySelectorAll(".navbar a");
 
         navLinks.forEach(link => {
             if (link.getAttribute("href") === currentPath) {
-                link.classList.add("active"); // Thêm class active nếu đường dẫn khớp với URL hiện tại
+                link.classList.add("active");
             }
         });
+
+        updateCartCount(); // ✅ Gọi ngay khi load trang để cập nhật số lượng sản phẩm
     });
 </script>

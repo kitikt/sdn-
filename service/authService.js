@@ -8,14 +8,14 @@ const generateAccessToken = (user) => {
     return jwt.sign(
         { username: user.username, role: user.role, userId: user._id },
         process.env.JWT_SECRET,
-        { expiresIn: process.env.JWT_EXPIRE } // VD: "15m"
+        { expiresIn: process.env.JWT_EXPIRE }
     );
 };
 const generateRefreshToken = (user) => {
     return jwt.sign(
         { username: user.username, role: user.role, userId: user._id },
         process.env.REFRESH_TOKEN_SECRET,
-        { expiresIn: process.env.REFRESH_TOKEN_EXPIRE } // Refresh token có thời hạn dài hơn, VD: 7 ngày
+        { expiresIn: process.env.REFRESH_TOKEN_EXPIRE }
     );
 };
 

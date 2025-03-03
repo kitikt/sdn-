@@ -20,8 +20,8 @@
         <!-- Main Content Section -->
         <h1 class="carousel-title">All Products</h1>
 
-        <div class="carousel-container"> <!-- Bọc tất cả bên trong -->
-            <div class="carousel-btn left" onclick="moveSlide(-1)">&#60;</div> <!-- Đặt ngoài wrapper -->
+        <div class="carousel-container">
+            <div class="carousel-btn left" onclick="moveSlide(-1)">&#60;</div>
 
             <div class="carousel-wrapper">
                 <div class="carousel">
@@ -45,8 +45,12 @@
                                 </p>
                                 <div class="actions">
                                     <a href="/product/<%= product._id %>" class="btn">Details</a>
-                                    <form action="/cart/add" method="POST" style="display: inline;">
-                                        <input type="hidden" name="productId" value="<%= product._id %>" />
+                                    <form class="add-to-cart-form" action="/cart/add" method="POST">
+                                        <input type="hidden" name="productId" value="<%= product._id %>">
+                                        <input type="hidden" name="name" value="<%= product.name %>">
+                                        <input type="hidden" name="price" value="<%= product.price %>">
+
+                                        <input type="hidden" name="image" value="<%= product.image %>">
                                         <button type="submit" class="btn">Add to Cart</button>
                                     </form>
                                 </div>
@@ -56,7 +60,7 @@
                 </div>
             </div>
 
-            <div class="carousel-btn right" onclick="moveSlide(1)">&#62;</div> <!-- Đặt ngoài wrapper -->
+            <div class="carousel-btn right" onclick="moveSlide(1)">&#62;</div>
         </div>
 
         <script>
@@ -65,7 +69,6 @@
                 const items = Array.from(document.querySelectorAll('.carousel-item'));
                 const totalItems = items.length;
 
-                // Nhân đôi item để tạo vòng lặp mượt
                 items.forEach(item => {
                     let clone = item.cloneNode(true);
                     carousel.appendChild(clone);
@@ -78,7 +81,7 @@
                     if (isTransitioning) return;
                     isTransitioning = true;
 
-                    const itemWidth = items[0].offsetWidth + 20; // 20 là khoảng cách giữa các item
+                    const itemWidth = items[0].offsetWidth + 20;
                     slideIndex += direction;
 
                     carousel.style.transition = "transform 0.5s ease-in-out";
@@ -101,6 +104,32 @@
 
                 document.querySelector('.carousel-btn.right').addEventListener('click', () => moveSlide(1));
                 document.querySelector('.carousel-btn.left').addEventListener('click', () => moveSlide(-1));
+            });
+            async function updateCartCount() {
+                const response = await fetch("/cart/items");
+                const data = await response.json();
+                const cartCount = data.cart.reduce((sum, item) => sum + item.quantity, 0);
+                document.getElementById("cart-count").innerText = cartCount;
+            }
+
+            document.querySelectorAll(".add-to-cart-form").forEach(form => {
+                form.addEventListener("submit", async (e) => {
+                    e.preventDefault();
+
+                    const formData = new FormData(form);
+                    const response = await fetch("/cart/add", {
+                        method: "POST",
+                        body: formData
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        updateCartCount();
+                    } else {
+                        console.error("Failed to add product to cart.");
+                    }
+                });
             });
 
         </script>

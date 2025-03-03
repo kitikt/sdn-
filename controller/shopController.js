@@ -1,16 +1,12 @@
-const { getAllProducts, createProductService } = require("../service/shopService");
+const { getAllProducts, createProductService, getCartService, getTotalPriceService, addCartService, removeCartService } = require("../service/shopService");
 
 
 
-const getProductsController = async (req, res) => {
+const getProductsController = async (req, res, next) => {
     try {
         const products = await getAllProducts();
-        // Render view sản phẩm (EJS)
-        res.render('product', {
-            prods: products,
-            pageTitle: 'All Products',
-            path: '/products'
-        });
+        req.products = products
+        next()
     } catch (err) {
         console.log(err);
         next(err);
@@ -52,5 +48,40 @@ const logoutController = (req, res) => {
     }
 };
 
+const getCartController = (req, res, next) => {
+    req.cart = getCartService(req.session);
+    console.log("Cart data:", req.cart);
+    req.totalPrice = getTotalPriceService(req.cart);
+    next();
+};
 
-module.exports = { getProductsController, logoutController, createProductController }
+const addToCartController = (req, res, next) => {
+    console.log("Received data:", req.body); // Kiểm tra dữ liệu khi gửi lên
+
+    const { productId, name, price, image } = req.body;
+
+    // Kiểm tra nếu dữ liệu bị thiếu
+    if (!productId || !name || !price || !image) {
+        console.error(`❌ Lỗi: Dữ liệu sản phẩm không hợp lệ!`, req.body);
+        return res.status(400).json({ success: false, message: "Invalid product data" });
+    }
+
+    // Chuyển đổi giá trị price sang số
+    const priceNum = parseFloat(price);
+    if (isNaN(priceNum) || priceNum < 0) {
+        console.error(`❌ Lỗi: Giá sản phẩm không hợp lệ!`, price);
+        return res.status(400).json({ success: false, message: "Invalid product price" });
+    }
+
+    addCartService(req.session, { productId, name, price: priceNum, image });
+
+    console.log("Cart after adding:", req.session.cart); // Kiểm tra giỏ hàng sau khi thêm
+    res.json({ success: true, message: "Product added to cart!" });
+};
+
+const removeFromCartController = (req, res, next) => {
+    const { productId } = req.body;
+    removeCartService(req.session, productId);
+    next(); // Tiếp tục middleware
+};
+module.exports = { getProductsController, logoutController, createProductController, addToCartController, getCartController, removeFromCartController }

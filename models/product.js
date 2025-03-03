@@ -16,12 +16,12 @@ const productSchema = new mongoose.Schema({
         type: Number,
 
         min: 0,
-        max: 99
+
 
     },
     categoryId: { type: mongoose.Schema.Types.ObjectId, ref: 'Category', required: true },
     image: {
-        type: String // Lưu đường dẫn file ảnh
+        type: String
     }
 
 });

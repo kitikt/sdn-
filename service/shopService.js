@@ -30,4 +30,34 @@ const createProductService = async (req, res) => {
         res.status(400).json({ error: err.message });
     }
 }
-module.exports = { getAllProducts, createProductService }
+const getCartService = (session) => {
+    return session.cart || [];
+};
+
+const addCartService = (session, { productId, name, price, image }) => {
+    if (!session.cart) {
+        session.cart = [];
+    }
+    const priceNum = parseFloat(price);
+    if (isNaN(priceNum) || priceNum <= 0) {
+        console.error(`Giá không hợp lệ cho sản phẩm ${productId}: ${price}`);
+        return session.cart;
+    }
+    const existingProduct = session.cart.find(p => p.productId === productId);
+    if (existingProduct) {
+        existingProduct.quantity += 1;
+    } else {
+        session.cart.push({ productId, name, price: priceNum, image, quantity: 1 });
+    }
+    return session.cart;
+};
+const removeCartService = (session, productId) => {
+    session.cart = session.cart.filter(product => product.productId !== productId);
+    return session.cart;
+};
+
+const getTotalPriceService = (cart) => {
+    return cart.reduce((total, product) => total + product.price * product.quantity, 0);
+};
+
+module.exports = { getAllProducts, createProductService, removeCartService, getTotalPriceService, getCartService, addCartService }

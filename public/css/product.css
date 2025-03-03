@@ -17,9 +17,7 @@ body {
 /* Banner */
 .banner {
     margin: 30px auto;
-    /* Đưa video vào giữa */
-    /* Điều chỉnh kích thước nhỏ lại */
-    /* Giảm chiều cao */
+
     width: 80%;
     max-width: 1200px;
     aspect-ratio: 16 / 9;
