@@ -1,5 +1,5 @@
 const express = require('express');
-const { getProductsController, logoutController, createProductController, addToCartController, getCartController, removeFromCartController, getProductDetailController, getAddProductPage, postAddProduct } = require('../controller/shopController');
+const { getProductsController, logoutController, createProductController, addToCartController, getCartController, removeFromCartController, getProductDetailController, getAddProductPage, postAddProduct, editProductController, getEditProductPage, deleteProductController } = require('../controller/shopController');
 
 const authOptional = require('../middleware/authOptional');
 const auth = require('../middleware/auth');
@@ -36,6 +36,11 @@ router.get('/admin/edit-product', auth, isAdmin, getProductsController, (req, re
         path: '/admin/edit-product'
     })
 })
+router.get('/admin/edit-product/:id', auth, isAdmin, getEditProductPage);
+
+router.post("/admin/edit-product/:id", auth, isAdmin, upload.single('image'), editProductController);
+router.post("/admin/delete-product/:id", auth, isAdmin, deleteProductController);
+
 router.get('/cart/items', authOptional, getCartController, (req, res) => {
     res.json({ cart: req.cart, totalPrice: req.totalPrice });
 });

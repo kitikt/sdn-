@@ -1,6 +1,6 @@
 const Category = require("../models/category");
 const Product = require("../models/product");
-const { getAllProducts, createProductService, getCartService, getTotalPriceService, addCartService, removeCartService, getProductByIdService } = require("../service/shopService");
+const { getAllProducts, createProductService, getCartService, getTotalPriceService, addCartService, removeCartService, getProductByIdService, deleteProductAdminService, editProductAdminService } = require("../service/shopService");
 
 
 
@@ -168,8 +168,71 @@ const removeFromCartController = (req, res, next) => {
     removeCartService(req.session, productId);
     next(); // Tiếp tục middleware
 };
+const getEditProductPage = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const product = await Product.findById(id);
+        const categories = await Category.find();
+
+        if (!product) {
+            return res.status(404).send("Product not found!");
+        }
+
+        res.render('editProductItem', {
+            pageTitle: 'Edit Product',
+            path: '/admin/edit-product',
+            product,
+            categories
+        });
+    } catch (error) {
+        console.error("Error fetching product:", error);
+        res.status(500).send("Server Error");
+    }
+};
+
+// Cập nhật sản phẩm
+const editProductController = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { name, description, price, categoryId } = req.body;
+
+        let updateData = { name, description, price, categoryId };
+
+        if (req.file) {
+            updateData.image = '/uploads/' + req.file.filename;
+        }
+
+        const updatedProduct = await Product.findByIdAndUpdate(id, updateData, { new: true });
+
+        if (!updatedProduct) {
+            return res.status(404).send("Product not found!");
+        }
+
+        res.redirect('/admin/edit-product');
+    } catch (error) {
+        console.error("Error updating product:", error);
+        res.status(500).send("Server Error");
+    }
+};
+
+// Xóa sản phẩm
+const deleteProductController = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const deletedProduct = await Product.findByIdAndDelete(id);
+
+        if (!deletedProduct) {
+            return res.status(404).json({ error: "Product not found!" });
+        }
+
+        res.redirect("/admin/edit-product?success=true")
+    } catch (error) {
+        console.error("Error deleting product:", error);
+        res.status(500).json({ error: "Server Error" });
+    }
+};
 module.exports = {
     getProductsController, postAddProduct, getAddProductPage,
-    logoutController, getAddProductPage,
-    createProductController, addToCartController, getCartController, removeFromCartController, getProductDetailController
+    logoutController, getAddProductPage, getEditProductPage,
+    createProductController, addToCartController, deleteProductController, editProductController, getCartController, removeFromCartController, getProductDetailController
 }
