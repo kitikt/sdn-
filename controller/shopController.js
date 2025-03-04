@@ -1,3 +1,5 @@
+const Category = require("../models/category");
+const Product = require("../models/product");
 const { getAllProducts, createProductService, getCartService, getTotalPriceService, addCartService, removeCartService, getProductByIdService } = require("../service/shopService");
 
 
@@ -69,6 +71,8 @@ const getProductDetailController = async (req, res) => {
         }
 
 
+
+
         // ✅ Nếu không, render HTML
         res.render("productDetail", {
             product: product,
@@ -81,6 +85,57 @@ const getProductDetailController = async (req, res) => {
         res.status(500).render('error', { message: "Server Error" });
     }
 };
+
+const postAddProduct = async (req, res) => {
+    try {
+        const category = await Category.findById(req.body.categoryId);
+        if (!category) {
+            return res.status(404).json({ error: "Category not found" });
+        }
+
+        // Tạo dữ liệu sản phẩm từ req.body
+        let productData = {
+            name: req.body.name,
+            description: req.body.description,
+            price: req.body.price,
+            categoryId: req.body.categoryId // Kiểm tra xem giá trị có hợp lệ không
+        };
+
+        if (req.file) {
+            productData.image = '/uploads/' + req.file.filename;
+        }
+
+        // Lưu sản phẩm vào database
+        const newProduct = new Product(productData);
+        const savedProduct = await newProduct.save();
+
+        // Thêm sản phẩm vào danh mục
+        await Category.findByIdAndUpdate(req.body.categoryId, { $push: { products: savedProduct._id } });
+
+        // ✅ Chuyển hướng kèm `success=true` để hiển thị thông báo trong EJS
+        res.redirect('/admin/add-product?success=true');
+
+    } catch (err) {
+        console.error("Error uploading product:", err);
+        res.status(400).json({ error: err.message });
+    }
+};
+
+const getAddProductPage = async (req, res) => {
+    try {
+        const categories = await Category.find();
+        res.render('addProduct', {
+            pageTitle: 'Add Product',
+            path: '/admin/add-product',
+            categories: categories,
+            success: req.query.success || false  // ✅ Truyền success vào EJS
+        });
+    } catch (error) {
+        console.error("Error fetching categories:", error);
+        res.status(500).send("Server Error");
+    }
+};
+
 
 
 
@@ -113,4 +168,8 @@ const removeFromCartController = (req, res, next) => {
     removeCartService(req.session, productId);
     next(); // Tiếp tục middleware
 };
-module.exports = { getProductsController, logoutController, createProductController, addToCartController, getCartController, removeFromCartController, getProductDetailController }
+module.exports = {
+    getProductsController, postAddProduct, getAddProductPage,
+    logoutController, getAddProductPage,
+    createProductController, addToCartController, getCartController, removeFromCartController, getProductDetailController
+}

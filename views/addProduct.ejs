@@ -11,52 +11,63 @@
 
 </head>
 
+<% if (success) { %>
+
+    <script>
+        alert("🎉 Sản phẩm đã được thêm thành công!");
+    </script>
+    <% } %>
 
 
 
-<body>
-    <%- include('./includes/navigation.ejs') %>
+        <body>
+            <%- include('./includes/navigation.ejs') %>
 
 
-        <div class="upload-container">
-            <h2 class="upload-title">Upload Files</h2>
-            <form action="/admin/add-product" method="POST" enctype="multipart/form-data" class="upload-form">
-                <div class="drop-area">
-                    <input type="file" name="thumbnail" id="thumbnail" accept="image/png, image/jpeg, image/jpg"
-                        required>
-                    <p>Drop files to upload or <span class="browse-text">browse</span></p>
+                <div class="upload-container">
+                    <h2 class="upload-title">Upload Files</h2>
+                    <form action="/admin/add-product" method="POST" enctype="multipart/form-data" class="upload-form">
+                        <div class="drop-area">
+                            <input type="file" name="image" id="image" accept="image/png, image/jpeg, image/jpg"
+                                required>
+                            <p>Drop files to upload or <span class="browse-text">browse</span></p>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="name">Product Name</label>
+                            <input type="text" name="name" id="name" placeholder="Enter product name" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="description">Description</label>
+                            <textarea name="description" id="description" placeholder="Enter description"
+                                required></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="price">Price</label>
+                            <input type="number" name="price" id="price" placeholder="Enter price" step="0.01" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="category">Category</label>
+                            <select name="categoryId" id="category" required>
+                                <% categories.forEach(category=> { %>
+                                    <option value="<%= category._id %>">
+                                        <%= category.name %>
+                                    </option>
+                                    <% }) %>
+                            </select>
+                        </div>
+
+                        <div class="button-group">
+                            <button type="submit" class="upload-btn">Upload Files</button>
+                            <button type="reset" class="cancel-btn">Cancel</button>
+                        </div>
+                    </form>
+
                 </div>
 
-                <div class="form-group">
-                    <label for="title">Product Name</label>
-                    <input type="text" name="title" id="title" placeholder="Enter product name" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="description">Description</label>
-                    <textarea name="description" id="description" placeholder="Enter description" required></textarea>
-                </div>
-
-                <div class="form-group">
-                    <label for="price">Price</label>
-                    <input type="number" name="price" id="price" placeholder="Enter price" step="0.01" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="Category">Category</label>
-                    <select name="Category" id="Category">
-                        <option value="published">Published</option>
-                        <option value="draft">Draft</option>
-                    </select>
-                </div>
-
-                <div class="button-group">
-                    <button type="submit" class="upload-btn">Upload Files</button>
-                    <button type="reset" class="cancel-btn">Cancel</button>
-                </div>
-            </form>
-        </div>
-
-</body>
+        </body>
 
 </html>

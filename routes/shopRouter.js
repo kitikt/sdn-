@@ -1,9 +1,10 @@
 const express = require('express');
-const { getProductsController, logoutController, createProductController, addToCartController, getCartController, removeFromCartController, getProductDetailController } = require('../controller/shopController');
+const { getProductsController, logoutController, createProductController, addToCartController, getCartController, removeFromCartController, getProductDetailController, getAddProductPage, postAddProduct } = require('../controller/shopController');
 
 const authOptional = require('../middleware/authOptional');
 const auth = require('../middleware/auth');
 const isAdmin = require('../middleware/isAdmin');
+const upload = require('../middleware/upload');
 const router = express.Router();
 
 router.get('/logout', logoutController)
@@ -15,14 +16,8 @@ router.get("/", authOptional, getProductsController, (req, res) => {
     });
 });
 
-router.get('/admin/add-product', auth, isAdmin, (req, res) => {
-    res.render('addProduct', {
-        pageTitle: 'Add Product',
-        path: '/admin/add-product',
-
-
-    });
-});
+router.get('/admin/add-product', auth, isAdmin, getAddProductPage)
+router.post('/admin/add-product', auth, isAdmin, upload.single('image'), postAddProduct);
 
 router.get('/product/:id', authOptional, getProductDetailController, (req, res) => {
     res.render("productDetail", {
@@ -55,7 +50,7 @@ router.get('/cart', authOptional, getCartController, (req, res) => {
 });
 
 // API thêm sản phẩm vào giỏ hàng (trả về JSON)
-router.post('/cart/add', authOptional, addToCartController, (req, res) => {
+router.post('/cart/add', authOptional, upload.none(), addToCartController, (req, res) => {
     res.json({ success: true, message: "Product added to cart!" });
 });
 
