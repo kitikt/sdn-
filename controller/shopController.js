@@ -1,4 +1,4 @@
-const { getAllProducts, createProductService, getCartService, getTotalPriceService, addCartService, removeCartService } = require("../service/shopService");
+const { getAllProducts, createProductService, getCartService, getTotalPriceService, addCartService, removeCartService, getProductByIdService } = require("../service/shopService");
 
 
 
@@ -54,6 +54,35 @@ const getCartController = (req, res, next) => {
     req.totalPrice = getTotalPriceService(req.cart);
     next();
 };
+const getProductDetailController = async (req, res) => {
+    try {
+        const productId = req.params.id;
+        const product = await getProductByIdService(productId);
+
+        if (!product) {
+            return res.status(404).render('error', { message: "Product not found!" });
+        }
+
+        // ✅ Chỉ trả về JSON nếu request CHỈ CHẤP NHẬN JSON
+        if (req.headers.accept && req.headers.accept.includes('application/json')) {
+            return res.json(product);
+        }
+
+
+        // ✅ Nếu không, render HTML
+        res.render("productDetail", {
+            product: product,
+            pageTitle: product.name,
+            path: `/product/${productId}`
+        });
+
+    } catch (error) {
+        console.error("Error fetching product details:", error);
+        res.status(500).render('error', { message: "Server Error" });
+    }
+};
+
+
 
 const addToCartController = (req, res, next) => {
     console.log("Received data:", req.body); // Kiểm tra dữ liệu khi gửi lên
@@ -84,4 +113,4 @@ const removeFromCartController = (req, res, next) => {
     removeCartService(req.session, productId);
     next(); // Tiếp tục middleware
 };
-module.exports = { getProductsController, logoutController, createProductController, addToCartController, getCartController, removeFromCartController }
+module.exports = { getProductsController, logoutController, createProductController, addToCartController, getCartController, removeFromCartController, getProductDetailController }

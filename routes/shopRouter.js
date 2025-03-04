@@ -1,5 +1,5 @@
 const express = require('express');
-const { getProductsController, logoutController, createProductController, addToCartController, getCartController, removeFromCartController } = require('../controller/shopController');
+const { getProductsController, logoutController, createProductController, addToCartController, getCartController, removeFromCartController, getProductDetailController } = require('../controller/shopController');
 
 const authOptional = require('../middleware/authOptional');
 const auth = require('../middleware/auth');
@@ -23,8 +23,15 @@ router.get('/admin/add-product', auth, isAdmin, (req, res) => {
 
     });
 });
-router.get('/:id',)
-// router.get('/:id' , getDetailController )
+
+router.get('/product/:id', authOptional, getProductDetailController, (req, res) => {
+    res.render("productDetail", {
+        product: product,
+        pageTitle: product.name,
+        path: `/product/${productId}`
+    });
+});
+
 router.post('/admin/add-product', auth, isAdmin, createProductController)
 
 router.get('/admin/edit-product', auth, isAdmin, getProductsController, (req, res) => {
