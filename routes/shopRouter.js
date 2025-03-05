@@ -54,12 +54,10 @@ router.get('/cart', authOptional, getCartController, (req, res) => {
     });
 });
 
-// API thêm sản phẩm vào giỏ hàng (trả về JSON)
 router.post('/cart/add', authOptional, upload.none(), addToCartController, (req, res) => {
     res.json({ success: true, message: "Product added to cart!" });
 });
 
-// API xóa sản phẩm khỏi giỏ hàng (trả về JSON)
 router.post('/cart/remove', authOptional, removeFromCartController, (req, res) => {
     res.json({ success: true, message: "Product removed from cart!" });
 });

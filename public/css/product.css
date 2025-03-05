@@ -53,6 +53,7 @@ body {
     width: 100%;
     max-width: 1200px;
     margin: auto;
+
 }
 
 /* Khung chứa slider */
@@ -115,12 +116,14 @@ body {
 
 /* Nút Details và Add to Cart */
 .btn {
+
     background-color: #1B1A18;
     color: #D6CEBD;
     padding: 10px 20px;
     text-decoration: none;
     border-radius: 5px;
-    display: inline-block;
+    font-family: Arial, sans-serif !important;
+    font-size: 16px !important;
     margin-top: 10px;
     border: none;
     outline: none;
@@ -129,12 +132,14 @@ body {
 
 /* btn của add to cart và detail */
 .btn:hover {
-    background-color: #1B1A18;
+    background-color: #968888;
 }
 
-/* ========== CĂN CHỈNH NÚT ĐIỀU HƯỚNG (< >) ========== */
+.actions {
+    display: flex;
+    flex-direction: row;
+}
 
-/* Nút điều hướng */
 .carousel-btn {
     position: absolute;
     top: 50%;
@@ -155,14 +160,12 @@ body {
 
 .carousel-btn:hover {
     color: #e7ca8c;
-    /* Chỉ thay đổi màu mà không có viền */
+
     background: none;
-    /* Không đổi nền */
+
     border: none;
-    /* Đảm bảo không có viền */
 }
 
-/* Đẩy nút sang hai bên ngoài slider */
 .carousel-btn.left {
     left: -60px;
 }
@@ -174,7 +177,6 @@ body {
 }
 
 
-/* ========== RESPONSIVE ========== */
 @media (max-width: 768px) {
     .container {
         flex-direction: column;
