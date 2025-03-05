@@ -58,18 +58,54 @@
 
         .btn {
             text-decoration: none;
-            background-color: #1B1A18;
+            background-color: #484343;
             color: #D6CEBD;
             padding: 8px 15px;
             border-radius: 5px;
             display: inline-block;
             margin: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-family: Arial, sans-serif;
         }
 
         .btn:hover {
-            box-shadow: none;
+            background-color: #968888;
+        }
+
+        /* Nút delete */
+        .delete-btn {
+            background-color: #484343;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+        }
+
+        .delete-btn:hover {
+            background-color: #968888;
         }
     </style>
+
+    <script>
+        function confirmDelete(productId) {
+            if (confirm("Do you sure want to delete this product ?")) {
+                fetch(`/admin/delete-product/${productId}`, {
+                    method: "POST"
+                }).then(response => {
+                    if (response.ok) {
+                        alert("Delete Product success");
+                        window.location.reload(); // Reload lại trang sau khi xóa
+                    } else {
+                        alert("Error in delete ");
+                    }
+                }).catch(error => {
+                    console.error("Error deleting product:", error);
+                    alert("Error ");
+                });
+            }
+        }
+    </script>
+
 </head>
 
 <body>
@@ -98,11 +134,8 @@
                             <%= product.description %>
                         </p>
                         <div class="actions">
-                            <a href="/product/<%= product._id %>" class="btn">Edit</a>
-                            <form action="/cart/add" method="POST" style="display: inline;">
-                                <input type="hidden" name="productId" value="<%= product._id %>" />
-                                <button type="submit" class="btn">Delete</button>
-                            </form>
+                            <a href="/admin/edit-product/<%= product._id %>" class="btn">Edit</a>
+                            <button class="btn delete-btn" onclick="confirmDelete('<%= product._id %>')">Delete</button>
                         </div>
                     </div>
                 </div>

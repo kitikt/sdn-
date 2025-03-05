@@ -33,6 +33,15 @@ const createProductService = async (req, res) => {
 const getCartService = (session) => {
     return session.cart || [];
 };
+const getProductByIdService = async (productId) => {
+    try {
+        const product = await Product.findById(productId);
+        return product;
+    } catch (error) {
+        console.error("Error fetching product:", error);
+        throw error; // Ném lỗi để controller xử lý
+    }
+};
 
 const addCartService = (session, { productId, name, price, image }) => {
     if (!session.cart) {
@@ -55,9 +64,15 @@ const removeCartService = (session, productId) => {
     session.cart = session.cart.filter(product => product.productId !== productId);
     return session.cart;
 };
+const deleteProductAdminService = async (productId) => {
+    return await Product.findByIdAndDelete(productId);
+};
+const editProductAdminService = async (productId, updatedData) => {
+    return await Product.findByIdAndUpdate(productId, updatedData, { new: true });
+};
 
 const getTotalPriceService = (cart) => {
     return cart.reduce((total, product) => total + product.price * product.quantity, 0);
 };
 
-module.exports = { getAllProducts, createProductService, removeCartService, getTotalPriceService, getCartService, addCartService }
+module.exports = { getAllProducts, deleteProductAdminService, createProductService, editProductAdminService, removeCartService, getTotalPriceService, getCartService, addCartService, getProductByIdService }

@@ -51,7 +51,8 @@ router.get('/', authOptional, async (req, res) => {
  *       200:
  *         description: Trả về thông tin sản phẩm
  */
-router.get('/:id', async (req, res) => {
+// Đổi router trả về JSON thành /api/product/:id
+router.get('/api/product/:id', async (req, res) => {
     try {
         const product = await Product.findById(req.params.id);
         if (!product) {

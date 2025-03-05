@@ -2,6 +2,8 @@
 <html lang="en">
 
 <head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
     <meta charset="UTF-8">
     <title>Resonance</title>
     <link rel="stylesheet" href="/css/product.css">
@@ -21,7 +23,14 @@
         <h1 class="carousel-title">All Products</h1>
 
         <div class="carousel-container">
-            <div class="carousel-btn left" onclick="moveSlide(-1)">&#60;</div>
+            <div class="carousel-btn left" onclick="moveSlide(-1)">
+                <i class="fas fa-chevron-left"></i>
+            </div>
+
+            <div class="carousel-btn right" onclick="moveSlide(1)">
+                <i class="fas fa-chevron-right"></i>
+            </div>
+
 
             <div class="carousel-wrapper">
                 <div class="carousel">
@@ -59,8 +68,8 @@
                         <% } %>
                 </div>
             </div>
-
-            <div class="carousel-btn right" onclick="moveSlide(1)">&#62;</div>
+            <!-- 
+            <div class="carousel-btn right" onclick="moveSlide(1)">&#62;</div> -->
         </div>
 
         <script>

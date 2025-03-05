@@ -1,4 +1,6 @@
-const { getAllProducts, createProductService, getCartService, getTotalPriceService, addCartService, removeCartService } = require("../service/shopService");
+const Category = require("../models/category");
+const Product = require("../models/product");
+const { getAllProducts, createProductService, getCartService, getTotalPriceService, addCartService, removeCartService, getProductByIdService, deleteProductAdminService, editProductAdminService } = require("../service/shopService");
 
 
 
@@ -54,6 +56,88 @@ const getCartController = (req, res, next) => {
     req.totalPrice = getTotalPriceService(req.cart);
     next();
 };
+const getProductDetailController = async (req, res) => {
+    try {
+        const productId = req.params.id;
+        const product = await getProductByIdService(productId);
+
+        if (!product) {
+            return res.status(404).render('error', { message: "Product not found!" });
+        }
+
+        // ✅ Chỉ trả về JSON nếu request CHỈ CHẤP NHẬN JSON
+        if (req.headers.accept && req.headers.accept.includes('application/json')) {
+            return res.json(product);
+        }
+
+
+
+
+        // ✅ Nếu không, render HTML
+        res.render("productDetail", {
+            product: product,
+            pageTitle: product.name,
+            path: `/product/${productId}`
+        });
+
+    } catch (error) {
+        console.error("Error fetching product details:", error);
+        res.status(500).render('error', { message: "Server Error" });
+    }
+};
+
+const postAddProduct = async (req, res) => {
+    try {
+        const category = await Category.findById(req.body.categoryId);
+        if (!category) {
+            return res.status(404).json({ error: "Category not found" });
+        }
+
+        // Tạo dữ liệu sản phẩm từ req.body
+        let productData = {
+            name: req.body.name,
+            description: req.body.description,
+            price: req.body.price,
+            categoryId: req.body.categoryId // Kiểm tra xem giá trị có hợp lệ không
+        };
+
+        if (req.file) {
+            productData.image = '/uploads/' + req.file.filename;
+        }
+
+        // Lưu sản phẩm vào database
+        const newProduct = new Product(productData);
+        const savedProduct = await newProduct.save();
+
+        // Thêm sản phẩm vào danh mục
+        await Category.findByIdAndUpdate(req.body.categoryId, { $push: { products: savedProduct._id } });
+
+        // ✅ Chuyển hướng kèm `success=true` để hiển thị thông báo trong EJS
+        res.redirect('/admin/add-product?success=true');
+
+    } catch (err) {
+        console.error("Error uploading product:", err);
+        res.status(400).json({ error: err.message });
+    }
+};
+
+const getAddProductPage = async (req, res) => {
+    try {
+        const categories = await Category.find();
+        res.render('addProduct', {
+            pageTitle: 'Add Product',
+            path: '/admin/add-product',
+            categories: categories,
+            success: req.query.success || false  // ✅ Truyền success vào EJS
+        });
+    } catch (error) {
+        console.error("Error fetching categories:", error);
+        res.status(500).send("Server Error");
+    }
+};
+
+
+
 
 const addToCartController = (req, res, next) => {
     console.log("Received data:", req.body); // Kiểm tra dữ liệu khi gửi lên
@@ -84,4 +168,71 @@ const removeFromCartController = (req, res, next) => {
     removeCartService(req.session, productId);
     next(); // Tiếp tục middleware
 };
-module.exports = { getProductsController, logoutController, createProductController, addToCartController, getCartController, removeFromCartController }
+const getEditProductPage = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const product = await Product.findById(id);
+        const categories = await Category.find();
+
+        if (!product) {
+            return res.status(404).send("Product not found!");
+        }
+
+        res.render('editProductItem', {
+            pageTitle: 'Edit Product',
+            path: '/admin/edit-product',
+            product,
+            categories
+        });
+    } catch (error) {
+        console.error("Error fetching product:", error);
+        res.status(500).send("Server Error");
+    }
+};
+
+// Cập nhật sản phẩm
+const editProductController = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { name, description, price, categoryId } = req.body;
+
+        let updateData = { name, description, price, categoryId };
+
+        if (req.file) {
+            updateData.image = '/uploads/' + req.file.filename;
+        }
+
+        const updatedProduct = await Product.findByIdAndUpdate(id, updateData, { new: true });
+
+        if (!updatedProduct) {
+            return res.status(404).send("Product not found!");
+        }
+
+        res.redirect('/admin/edit-product');
+    } catch (error) {
+        console.error("Error updating product:", error);
+        res.status(500).send("Server Error");
+    }
+};
+
+// Xóa sản phẩm
+const deleteProductController = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const deletedProduct = await Product.findByIdAndDelete(id);
+
+        if (!deletedProduct) {
+            return res.status(404).json({ error: "Product not found!" });
+        }
+
+        res.redirect("/admin/edit-product?success=true")
+    } catch (error) {
+        console.error("Error deleting product:", error);
+        res.status(500).json({ error: "Server Error" });
+    }
+};
+module.exports = {
+    getProductsController, postAddProduct, getAddProductPage,
+    logoutController, getAddProductPage, getEditProductPage,
+    createProductController, addToCartController, deleteProductController, editProductController, getCartController, removeFromCartController, getProductDetailController
+}
