@@ -58,7 +58,7 @@ router.post('/cart/add', authOptional, upload.none(), addToCartController, (req,
     res.json({ success: true, message: "Product added to cart!" });
 });
 
-router.post('/cart/remove', authOptional, removeFromCartController, (req, res) => {
+router.post('/cart/remove', authOptional, upload.none(), removeFromCartController, (req, res) => {
     res.json({ success: true, message: "Product removed from cart!" });
 });
 

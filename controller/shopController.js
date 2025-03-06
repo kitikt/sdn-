@@ -35,18 +35,16 @@ const createProductController = async (req, res) => {
 const logoutController = (req, res) => {
     if (req.session) {
         res.clearCookie('connect.sid');
-        res.clearCookie('access_token'); //xóa cookie access token
+        res.clearCookie('access_token');
         req.session.destroy((err) => {
             if (err) {
                 console.log('Lỗi khi hủy phiên:', err);
-                return res.redirect('/'); // Chuyển hướng về trang chủ nếu có lỗi
+                return res.redirect('/');
             }
-            // Xóa cookie phiên
-            // Sau khi xóa session và cookie, chuyển hướng về trang chủ hoặc trang login
-            res.redirect('/'); // Hoặc bạn có thể chuyển hướng tới trang login nếu cần
+            res.redirect('/');
         });
     } else {
-        res.redirect('/'); // Nếu không có session, chuyển hướng về trang chủ
+        res.redirect('/');
     }
 };
 
@@ -166,7 +164,7 @@ const addToCartController = (req, res, next) => {
 const removeFromCartController = (req, res, next) => {
     const { productId } = req.body;
     removeCartService(req.session, productId);
-    next(); // Tiếp tục middleware
+    next();
 };
 const getEditProductPage = async (req, res) => {
     try {
@@ -223,6 +221,9 @@ const deleteProductController = async (req, res) => {
 
         if (!deletedProduct) {
             return res.status(404).json({ error: "Product not found!" });
+        }
+        if (deletedProduct.categoryId) {
+            await Category.findByIdAndUpdate(deletedProduct.categoryId, { $pull: { products: deletedProduct._id } }, { new: true });
         }
 
         res.redirect("/admin/edit-product?success=true")

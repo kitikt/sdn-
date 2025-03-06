@@ -1,6 +1,7 @@
 const express = require('express');
 const Category = require('../models/category');
 const auth = require('../middleware/auth');
+const isAdmin = require('../middleware/isAdmin');
 const router = express.Router();
 
 /**
@@ -87,7 +88,7 @@ router.get('/:id', async (req, res) => {
  *       201:
  *         description: Danh mục đã được tạo
  */
-router.post('/', auth, async (req, res) => {
+router.post('/', auth, isAdmin, async (req, res) => {
     console.log('check user id', req.user.userId)
     try {
         const newCategory = new Category({
@@ -132,7 +133,7 @@ router.post('/', auth, async (req, res) => {
  *       200:
  *         description: Danh mục đã được cập nhật
  */
-router.put('/:id', auth, async (req, res) => {
+router.put('/:id', auth, isAdmin, async (req, res) => {
     try {
         const updatedCategory = await Category.findByIdAndUpdate(req.params.id, req.body, { new: true });
         if (!updatedCategory) {
@@ -164,7 +165,7 @@ router.put('/:id', auth, async (req, res) => {
  *       200:
  *         description: Danh mục đã bị xóa
  */
-router.delete('/:id', auth, async (req, res) => {
+router.delete('/:id', auth, isAdmin, async (req, res) => {
     try {
         const deletedCategory = await Category.findByIdAndDelete(req.params.id);
         if (!deletedCategory) {

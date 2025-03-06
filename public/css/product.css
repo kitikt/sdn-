@@ -61,7 +61,7 @@ body {
     position: relative;
     overflow: hidden;
     width: 90%;
-    padding: 20px 0;
+    padding: 20px 10px;
 }
 
 /* Thanh chứa các sản phẩm */
@@ -77,7 +77,7 @@ body {
     width: 250px;
     background-color: #1B1A18;
     border: 1px solid #D6CEBD;
-    border-radius: 10px;
+    border-radius: 20px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     transition: all 0.3s ease;
     text-align: center;
