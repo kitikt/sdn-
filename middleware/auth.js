@@ -29,7 +29,7 @@ const auth = async (req, res, next) => {
             return res.status(401).json({ message: "Token malformatted" });
         }
 
-        token = parts[1]; // Cập nhật token từ headers nếu không có trong cookies
+        token = parts[1];
     }
 
     try {
@@ -56,7 +56,7 @@ const auth = async (req, res, next) => {
                     httpOnly: true,
                     secure: false,
                     sameSite: 'Strict',
-                    maxAge: 15 * 60 * 1000, // 15 phút
+                    maxAge: 15 * 60 * 1000,
                 });
 
                 const newDecoded = jwt.verify(newAccessToken, process.env.JWT_SECRET);

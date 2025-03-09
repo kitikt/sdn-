@@ -9,6 +9,7 @@ var session = require('express-session')
 var swaggerUi = require('swagger-ui-express');
 var swaggerSpec = require('./config/swagger');
 var shopRouter = require('./routes/shopRouter')
+
 require('dotenv').config();
 
 var app = express();
@@ -35,7 +36,13 @@ app.use('/api/product', require('./routes/productRouter'));
 app.use('/v1', require('./routes/authRouter'));
 app.use(shopRouter)
 
+app.get('/success', (req, res) => {
+  res.render('success'); // Renders success.ejs
+});
 
+app.get('/cancel', (req, res) => {
+  res.render('cancel'); // Renders cancel.ejs
+});
 app.use((req, res) => {
   res.status(404).render('404');
 });
@@ -53,6 +60,8 @@ module.exports = app;
 
 var http = require('http');
 const connection = require('./config/database');
+
+
 var port = 3009;
 app.set('port', port);
 

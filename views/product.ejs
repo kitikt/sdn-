@@ -2,123 +2,103 @@
 <html lang="en">
 
 <head>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-
     <meta charset="UTF-8">
-    <title>Resonance</title>
-    <link rel="stylesheet" href="/css/product.css">
+    <title>All Products</title>
+    <style>
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
 
+        .grid-item {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .product-image img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+
+        .btn {
+            background-color: #333;
+            text-decoration: none;
+            color: #fff;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 16px;
+            color: #D6CEBD;
+
+        }
+
+        .btn:hover {
+            opacity: 0.8;
+            background-color: #484343;
+        }
+    </style>
 </head>
 
 <body>
+    <!-- Thanh điều hướng -->
     <%- include('./includes/navigation.ejs') %>
 
-        <section class="banner">
-            <video autoplay loop muted playsinline>
-                <source src="/video/bannervideoedit.mp4" type="video/mp4">
-                Your browser does not support the video tag.
-            </video>
-        </section>
-        <!-- Main Content Section -->
-        <h1 class="carousel-title">All Products</h1>
+        <h1 style="text-align:center; margin-top:20px;">All Products</h1>
 
-        <div class="carousel-container">
-            <div class="carousel-btn left" onclick="moveSlide(-1)">
-                <i class="fas fa-chevron-left"></i>
-            </div>
-
-            <div class="carousel-btn right" onclick="moveSlide(1)">
-                <i class="fas fa-chevron-right"></i>
-            </div>
-
-
-            <div class="carousel-wrapper">
-                <div class="carousel">
-                    <% for (let product of prods) { %>
-                        <div class="carousel-item">
-                            <div class="product-image">
-                                <% if (product.image) { %>
-                                    <img src="<%= product.image %>" alt="<%= product.name %>">
-                                    <% } else { %>
-                                        <img src="/images/no-image.jpg" alt="No image available">
-                                        <% } %>
-                            </div>
-                            <div class="product-info">
-                                <h2 class="product-title">
-                                    <%= product.name %>
-                                </h2>
-                                <p class="product-price">$ <%= product.price %>
-                                </p>
-                                <p class="product-description">
-                                    <%= product.description %>
-                                </p>
-                                <div class="actions">
-                                    <a href="/product/<%= product._id %>" class="btn">Details</a>
-                                    <form class="add-to-cart-form" action="/cart/add" method="POST">
-                                        <input type="hidden" name="productId" value="<%= product._id %>">
-                                        <input type="hidden" name="name" value="<%= product.name %>">
-                                        <input type="hidden" name="price" value="<%= product.price %>">
-
-                                        <input type="hidden" name="image" value="<%= product.image %>">
-                                        <button type="submit" class="btn">Add to Cart</button>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                        <% } %>
+        <!-- Grid Container -->
+        <div class="grid-container">
+            <% for (let product of prods) { %>
+                <div class="grid-item">
+                    <div class="product-image">
+                        <% if (product.image) { %>
+                            <img src="<%= product.image %>" alt="<%= product.name %>">
+                            <% } else { %>
+                                <img src="/images/no-image.jpg" alt="No image available">
+                                <% } %>
+                    </div>
+                    <h2 class="product-title">
+                        <%= product.name %>
+                    </h2>
+                    <p class="product-price">$ <%= product.price %>
+                    </p>
+                    <p class="product-description">
+                        <%= product.description %>
+                    </p>
+                    <div class="actions">
+                        <a href="/product/<%= product._id %>" class="btn">Details</a>
+                        <form class="add-to-cart-form" action="/cart/add" method="POST" style="display:inline;">
+                            <input type="hidden" name="productId" value="<%= product._id %>">
+                            <input type="hidden" name="name" value="<%= product.name %>">
+                            <input type="hidden" name="price" value="<%= product.price %>">
+                            <input type="hidden" name="image" value="<%= product.image %>">
+                            <button type="submit" class="btn">Add to Cart</button>
+                        </form>
+                    </div>
                 </div>
-            </div>
-            <!-- 
-            <div class="carousel-btn right" onclick="moveSlide(1)">&#62;</div> -->
+                <% } %>
         </div>
 
+        <!-- Thêm script nếu bạn muốn xử lý giỏ hàng AJAX -->
         <script>
-            document.addEventListener("DOMContentLoaded", () => {
-                const carousel = document.querySelector('.carousel');
-                const items = Array.from(document.querySelectorAll('.carousel-item'));
-                const totalItems = items.length;
-
-                items.forEach(item => {
-                    let clone = item.cloneNode(true);
-                    carousel.appendChild(clone);
-                });
-
-                let slideIndex = 0;
-                let isTransitioning = false;
-
-                function moveSlide(direction) {
-                    if (isTransitioning) return;
-                    isTransitioning = true;
-
-                    const itemWidth = items[0].offsetWidth + 20;
-                    slideIndex += direction;
-
-                    carousel.style.transition = "transform 0.5s ease-in-out";
-                    carousel.style.transform = `translateX(${-slideIndex * itemWidth}px)`;
-
-                    // Khi đến cuối, nhảy về đầu ngay lập tức
-                    setTimeout(() => {
-                        if (slideIndex >= totalItems) {
-                            carousel.style.transition = "none";
-                            slideIndex = 0;
-                            carousel.style.transform = `translateX(${-slideIndex * itemWidth}px)`;
-                        } else if (slideIndex < 0) {
-                            carousel.style.transition = "none";
-                            slideIndex = totalItems - 1;
-                            carousel.style.transform = `translateX(${-slideIndex * itemWidth}px)`;
-                        }
-                        isTransitioning = false;
-                    }, 500); // Delay khớp với transition
-                }
-
-                document.querySelector('.carousel-btn.right').addEventListener('click', () => moveSlide(1));
-                document.querySelector('.carousel-btn.left').addEventListener('click', () => moveSlide(-1));
-            });
             async function updateCartCount() {
                 const response = await fetch("/cart/items");
+                if (!response.ok) return; // handle error
                 const data = await response.json();
                 const cartCount = data.cart.reduce((sum, item) => sum + item.quantity, 0);
-                document.getElementById("cart-count").innerText = cartCount;
+                const cartCountEl = document.getElementById("cart-count");
+                if (cartCountEl) {
+                    cartCountEl.innerText = cartCount;
+                }
             }
 
             document.querySelectorAll(".add-to-cart-form").forEach(form => {
@@ -126,23 +106,24 @@
                     e.preventDefault();
 
                     const formData = new FormData(form);
-                    const response = await fetch("/cart/add", {
-                        method: "POST",
-                        body: formData
-                    });
+                    try {
+                        const response = await fetch("/cart/add", {
+                            method: "POST",
+                            body: formData
+                        });
+                        const data = await response.json();
 
-                    const data = await response.json();
-
-                    if (data.success) {
-                        updateCartCount();
-                    } else {
-                        console.error("Failed to add product to cart.");
+                        if (data.success) {
+                            updateCartCount();
+                        } else {
+                            console.error("Failed to add product:", data.message);
+                        }
+                    } catch (err) {
+                        console.error("Error:", err);
                     }
                 });
             });
-
         </script>
-
 </body>
 
 </html>
