@@ -8,8 +8,8 @@
         <!-- Mục bên trái -->
         <div class="nav-links">
             <a href="/">Shop</a>
-            <a href="/cart">Cart</a>
-            <a href="/orders">Orders</a>
+            <a href="/cart">Cart (<span id="cart-count">0</span>)</a>
+            <a href="/product">Products</a>
             <% if (user && user.role==='admin' ) { %>
                 <a href="/admin/add-product">Add Product</a>
                 <a href="/admin/edit-product">Admin Products</a>
@@ -41,7 +41,6 @@
         });
     }
 
-    // ✅ Thêm đoạn script cập nhật số lượng sản phẩm trong Cart
     async function updateCartCount() {
         try {
             const response = await fetch("/cart/items");
@@ -63,6 +62,6 @@
             }
         });
 
-        updateCartCount(); // ✅ Gọi ngay khi load trang để cập nhật số lượng sản phẩm
+        updateCartCount();
     });
 </script>

@@ -4,6 +4,7 @@ const Category = require('../models/category');
 const auth = require('../middleware/auth');
 const upload = require('../middleware/upload');
 const authOptional = require('../middleware/authOptional');
+const isAdmin = require('../middleware/isAdmin');
 const router = express.Router();
 
 /**
@@ -27,7 +28,7 @@ const router = express.Router();
 router.get('/', authOptional, async (req, res) => {
     try {
         const products = await Product.find().populate("categoryId", "name");
-        return res.render('product', { prods: products, path: '/products' });
+        return res.status(200).json(products);
     } catch (err) {
         return res.status(500).json({ error: err.message });
     }
@@ -93,25 +94,21 @@ router.get('/api/product/:id', async (req, res) => {
  *       201:
  *         description: Sản phẩm được thêm thành công
  */
-router.post('/', auth, upload.single('image'), async (req, res) => {
+router.post('/', auth, isAdmin, upload.single('image'), async (req, res) => {
     try {
-        // Kiểm tra xem danh mục có tồn tại không
         const category = await Category.findById(req.body.categoryId);
         if (!category) {
             return res.status(404).json({ error: "Category not found" });
         }
 
-        // Tạo dữ liệu sản phẩm từ req.body
         let productData = req.body;
         if (req.file) {
-            // Nếu có file upload, lưu đường dẫn file ảnh
             productData.image = '/uploads/' + req.file.filename;
         }
 
         const newProduct = new Product(productData);
         const savedProduct = await newProduct.save();
 
-        // Cập nhật category để chứa sản phẩm này
         await Category.findByIdAndUpdate(req.body.categoryId, { $push: { products: savedProduct._id } });
 
         res.status(201).json(savedProduct);
@@ -154,7 +151,7 @@ router.post('/', auth, upload.single('image'), async (req, res) => {
  *       200:
  *         description: Sản phẩm đã được cập nhật
  */
-router.put('/:id', auth, async (req, res) => {
+router.put('/:id', auth, isAdmin, async (req, res) => {
     try {
         const { categoryId } = req.body;
         const product = await Product.findById(req.params.id);
@@ -162,7 +159,6 @@ router.put('/:id', auth, async (req, res) => {
             return res.status(404).json({ error: "Product not found" });
         }
 
-        // Nếu category thay đổi, cập nhật danh mục sản phẩm
         if (categoryId && product.categoryId.toString() !== categoryId) {
             await Category.findByIdAndUpdate(product.categoryId, { $pull: { products: product._id } });
             await Category.findByIdAndUpdate(categoryId, { $push: { products: product._id } });
@@ -196,14 +192,13 @@ router.put('/:id', auth, async (req, res) => {
  *       200:
  *         description: Sản phẩm đã bị xóa
  */
-router.delete('/:id', auth, async (req, res) => {
+router.delete('/:id', auth, isAdmin, async (req, res) => {
     try {
         const deletedProduct = await Product.findByIdAndDelete(req.params.id);
         if (!deletedProduct) {
             return res.status(404).json({ error: "Product not found" });
         }
 
-        // Xóa sản phẩm khỏi danh mục chứa nó
         if (deletedProduct.categoryId) {
             await Category.findByIdAndUpdate(deletedProduct.categoryId, { $pull: { products: deletedProduct._id } }, { new: true });
         }

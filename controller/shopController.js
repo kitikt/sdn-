@@ -1,6 +1,7 @@
 const Category = require("../models/category");
 const Product = require("../models/product");
-const { getAllProducts, createProductService, getCartService, getTotalPriceService, addCartService, removeCartService, getProductByIdService, deleteProductAdminService, editProductAdminService } = require("../service/shopService");
+const { getAllProducts, createProductService, getCartService, getTotalPriceService, addCartService, removeCartService, getProductByIdService, deleteProductAdminService, editProductAdminService, createOrderService, createPaymentLinkService, handleWebhookService, verifySignature } = require("../service/shopService");
+const crypto = require('crypto');
 
 
 
@@ -15,7 +16,19 @@ const getProductsController = async (req, res, next) => {
     }
 };
 
+const getProductCollectionController = async (req, res, next) => {
+    try {
+        const allProducts = await getAllProducts();
+        const shuffledProducts = [...allProducts].sort(() => 0.5 - Math.random());
 
+        const randomProducts = shuffledProducts.slice(0, 6);
+        req.products = randomProducts
+        next()
+    } catch (error) {
+        console.error("Error fetching products collection", error)
+        next(error)
+    }
+}
 const createProductController = async (req, res) => {
     try {
         const { name, title, image, price, description, categoryId } = req.body;
@@ -35,18 +48,16 @@ const createProductController = async (req, res) => {
 const logoutController = (req, res) => {
     if (req.session) {
         res.clearCookie('connect.sid');
-        res.clearCookie('access_token'); //xóa cookie access token
+        res.clearCookie('access_token');
         req.session.destroy((err) => {
             if (err) {
                 console.log('Lỗi khi hủy phiên:', err);
-                return res.redirect('/'); // Chuyển hướng về trang chủ nếu có lỗi
+                return res.redirect('/');
             }
-            // Xóa cookie phiên
-            // Sau khi xóa session và cookie, chuyển hướng về trang chủ hoặc trang login
-            res.redirect('/'); // Hoặc bạn có thể chuyển hướng tới trang login nếu cần
+            res.redirect('/');
         });
     } else {
-        res.redirect('/'); // Nếu không có session, chuyển hướng về trang chủ
+        res.redirect('/');
     }
 };
 
@@ -65,7 +76,7 @@ const getProductDetailController = async (req, res) => {
             return res.status(404).render('error', { message: "Product not found!" });
         }
 
-        // ✅ Chỉ trả về JSON nếu request CHỈ CHẤP NHẬN JSON
+
         if (req.headers.accept && req.headers.accept.includes('application/json')) {
             return res.json(product);
         }
@@ -73,7 +84,7 @@ const getProductDetailController = async (req, res) => {
 
 
 
-        // ✅ Nếu không, render HTML
+
         res.render("productDetail", {
             product: product,
             pageTitle: product.name,
@@ -93,26 +104,23 @@ const postAddProduct = async (req, res) => {
             return res.status(404).json({ error: "Category not found" });
         }
 
-        // Tạo dữ liệu sản phẩm từ req.body
         let productData = {
             name: req.body.name,
             description: req.body.description,
             price: req.body.price,
-            categoryId: req.body.categoryId // Kiểm tra xem giá trị có hợp lệ không
+            categoryId: req.body.categoryId
         };
 
         if (req.file) {
             productData.image = '/uploads/' + req.file.filename;
         }
 
-        // Lưu sản phẩm vào database
         const newProduct = new Product(productData);
         const savedProduct = await newProduct.save();
 
-        // Thêm sản phẩm vào danh mục
         await Category.findByIdAndUpdate(req.body.categoryId, { $push: { products: savedProduct._id } });
 
-        // ✅ Chuyển hướng kèm `success=true` để hiển thị thông báo trong EJS
+
         res.redirect('/admin/add-product?success=true');
 
     } catch (err) {
@@ -128,7 +136,7 @@ const getAddProductPage = async (req, res) => {
             pageTitle: 'Add Product',
             path: '/admin/add-product',
             categories: categories,
-            success: req.query.success || false  // ✅ Truyền success vào EJS
+            success: req.query.success || false
         });
     } catch (error) {
         console.error("Error fetching categories:", error);
@@ -140,7 +148,7 @@ const getAddProductPage = async (req, res) => {
 
 
 const addToCartController = (req, res, next) => {
-    console.log("Received data:", req.body); // Kiểm tra dữ liệu khi gửi lên
+    console.log("Received data:", req.body);
 
     const { productId, name, price, image } = req.body;
 
@@ -166,7 +174,7 @@ const addToCartController = (req, res, next) => {
 const removeFromCartController = (req, res, next) => {
     const { productId } = req.body;
     removeCartService(req.session, productId);
-    next(); // Tiếp tục middleware
+    next();
 };
 const getEditProductPage = async (req, res) => {
     try {
@@ -224,15 +232,55 @@ const deleteProductController = async (req, res) => {
         if (!deletedProduct) {
             return res.status(404).json({ error: "Product not found!" });
         }
+        if (deletedProduct.categoryId) {
+            await Category.findByIdAndUpdate(deletedProduct.categoryId, { $pull: { products: deletedProduct._id } }, { new: true });
+        }
 
         res.redirect("/admin/edit-product?success=true")
     } catch (error) {
         console.error("Error deleting product:", error);
         res.status(500).json({ error: "Server Error" });
     }
+}
+const receiveWebhookController = async (req, res) => {
+    try {
+
+        const { data, signature } = req.body;
+
+        if (!verifySignature(data, signature)) {
+            console.warn(" Chữ ký không hợp lệ, từ chối xử lý webhook!");
+            return res.status(400).json({ error: "Chữ ký không hợp lệ!" });
+        }
+
+        const updatedOrder = await handleWebhookService(req.body);
+        res.status(200).json({ message: 'Webhook processed successfully', order: updatedOrder });
+
+    } catch (error) {
+        console.error(' Lỗi xử lý webhook:', error);
+        res.status(500).json({ error: error.message });
+    }
 };
+
+const createPaymentController = async (req, res) => {
+    try {
+        const userId = req.user.userId
+        const cart = req.cart;
+        const { newOrder, orderCode } = await createOrderService(userId, cart);
+        const paymentLink = await createPaymentLinkService(orderCode, newOrder.totalAmount);
+
+        res.redirect(paymentLink);
+    } catch (error) {
+        console.error(' Lỗi tạo thanh toán:', error);
+        res.status(500).json({ error: error.message });
+    }
+};
+
+
 module.exports = {
     getProductsController, postAddProduct, getAddProductPage,
-    logoutController, getAddProductPage, getEditProductPage,
-    createProductController, addToCartController, deleteProductController, editProductController, getCartController, removeFromCartController, getProductDetailController
+    logoutController, getAddProductPage, getEditProductPage, getProductCollectionController,
+    createProductController, addToCartController, deleteProductController, editProductController,
+    getCartController, removeFromCartController, getProductDetailController, createPaymentController,
+    receiveWebhookController
+
 }

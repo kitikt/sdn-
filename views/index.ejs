@@ -2,164 +2,37 @@
 <html lang="en">
 
 <head>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
   <meta charset="UTF-8">
-  <title>HomePage</title>
-  <style>
-    /* Banner Section */
-    .banner {
-      position: relative;
-      width: 100%;
-      height: 600px;
-      /* Chiều cao banner */
-      overflow: hidden;
-    }
-
-    .banner img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .banner-content {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      color: white;
-      text-align: center;
-      font-size: 48px;
-      font-weight: bold;
-      text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.7);
-    }
-
-    .banner-content p {
-      margin-top: 10px;
-      font-size: 20px;
-      font-weight: normal;
-    }
-
-    /* Container cho phần carousel */
-    .container {
-      width: 100%;
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 40px 20px;
-    }
-
-    /* Carousel Styles */
-    .carousel-title {
-      margin-bottom: 20px;
-      font-size: 2rem;
-      text-align: center;
-      color: #333;
-    }
-
-    .carousel {
-      display: flex;
-      overflow-x: auto;
-      /* Cho phép cuộn ngang */
-      gap: 20px;
-      scroll-snap-type: x mandatory;
-      /* Cho snap khi cuộn */
-      padding: 20px 0;
-    }
-
-    .carousel-item {
-      flex: 0 0 auto;
-      width: 250px;
-      /* Chiều rộng mỗi item */
-      background-color: #fff;
-      border-radius: 8px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      transition: all 0.3s ease;
-      scroll-snap-align: start;
-      /* Snap vào đầu */
-    }
-
-    .carousel-item:hover {
-      box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
-    }
-
-    .product-image img {
-      width: 100%;
-      height: 180px;
-      object-fit: cover;
-      border-radius: 8px 8px 0 0;
-    }
-
-    .product-info {
-      padding: 15px;
-      text-align: center;
-    }
-
-    .product-title {
-      font-size: 1.25rem;
-      margin-bottom: 10px;
-      color: #333;
-    }
-
-    .product-price {
-      color: #055D4C;
-      font-size: 1rem;
-      margin-bottom: 10px;
-      font-weight: bold;
-    }
-
-    .product-description {
-      color: #666;
-      font-size: 0.875rem;
-      margin-bottom: 15px;
-    }
-
-    .actions {
-      display: flex;
-      gap: 10px;
-      justify-content: center;
-      margin-top: 10px;
-    }
-
-    .btn {
-      background-color: #055D4C;
-      color: white;
-      padding: 10px 20px;
-      text-decoration: none;
-      border-radius: 5px;
-      border: none;
-      cursor: pointer;
-    }
-
-    .btn:hover {
-      background-color: #04463A;
-    }
-
-    /* Ẩn scrollbar ngang của carousel (tùy chọn) */
-    .carousel::-webkit-scrollbar {
-      display: none;
-    }
-  </style>
+  <title>
+    <%= pageTitle %>
+  </title>
+  <link rel="stylesheet" href="/css/product.css">
 </head>
 
 <body>
-  <!-- Navigation -->
   <%- include('./includes/navigation.ejs') %>
 
-    <!-- Banner Section -->
     <section class="banner">
-      <img src="/images/banner.jpg" alt="Banner Image" />
-      <div class="banner-content">
-        DOLENGA WEAR
-        <p>Explore our new collection of products</p>
-      </div>
+      <video autoplay loop muted playsinline>
+        <source src="/video/bannervideoedit.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
     </section>
 
-    <!-- Container chính -->
-    <div class="container">
-      <!-- Tiêu đề carousel -->
-      <h2 class="carousel-title">Bestsellers</h2>
+    <!-- Main Content Section -->
+    <h1 class="carousel-title">Collection</h1>
 
-      <!-- Carousel các sản phẩm -->
-      <div class="carousel">
-        <% if (prods && prods.length> 0) { %>
+    <div class="carousel-container">
+      <div class="carousel-btn left" onclick="moveSlide(-1)">
+        <i class="fas fa-chevron-left"></i>
+      </div>
+      <div class="carousel-btn right" onclick="moveSlide(1)">
+        <i class="fas fa-chevron-right"></i>
+      </div>
+
+      <div class="carousel-wrapper">
+        <div class="carousel">
           <% for (let product of prods) { %>
             <div class="carousel-item">
               <div class="product-image">
@@ -170,9 +43,9 @@
                     <% } %>
               </div>
               <div class="product-info">
-                <h3 class="product-title">
+                <h2 class="product-title">
                   <%= product.name %>
-                </h3>
+                </h2>
                 <p class="product-price">$ <%= product.price %>
                 </p>
                 <p class="product-description">
@@ -180,19 +53,92 @@
                 </p>
                 <div class="actions">
                   <a href="/product/<%= product._id %>" class="btn">Details</a>
-                  <form action="/cart/add" method="POST" style="display: inline;">
+                  <form class="add-to-cart-form" action="/cart/add" method="POST">
                     <input type="hidden" name="productId" value="<%= product._id %>">
+                    <input type="hidden" name="name" value="<%= product.name %>">
+                    <input type="hidden" name="price" value="<%= product.price %>">
+                    <input type="hidden" name="image" value="<%= product.image %>">
                     <button type="submit" class="btn">Add to Cart</button>
                   </form>
                 </div>
               </div>
             </div>
             <% } %>
-              <% } else { %>
-                <p style="font-size: 1rem; color: #333;">No Products Found!</p>
-                <% } %>
+        </div>
       </div>
     </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const carousel = document.querySelector('.carousel');
+        const items = Array.from(document.querySelectorAll('.carousel-item'));
+        const totalItems = items.length;
+
+        // Clone các item để tạo hiệu ứng lặp
+        items.forEach(item => {
+          let clone = item.cloneNode(true);
+          carousel.appendChild(clone);
+        });
+
+        let slideIndex = 0;
+        let isTransitioning = false;
+
+        function moveSlide(direction) {
+          if (isTransitioning) return;
+          isTransitioning = true;
+
+          const itemWidth = items[0].offsetWidth + 20;
+          slideIndex += direction;
+
+          carousel.style.transition = "transform 0.5s ease-in-out";
+          carousel.style.transform = `translateX(${-slideIndex * itemWidth}px)`;
+
+          // Khi đến cuối, nhảy về đầu
+          setTimeout(() => {
+            if (slideIndex >= totalItems) {
+              carousel.style.transition = "none";
+              slideIndex = 0;
+              carousel.style.transform = `translateX(${-slideIndex * itemWidth}px)`;
+            } else if (slideIndex < 0) {
+              carousel.style.transition = "none";
+              slideIndex = totalItems - 1;
+              carousel.style.transform = `translateX(${-slideIndex * itemWidth}px)`;
+            }
+            isTransitioning = false;
+          }, 500);
+        }
+
+        document.querySelector('.carousel-btn.right').addEventListener('click', () => moveSlide(1));
+        document.querySelector('.carousel-btn.left').addEventListener('click', () => moveSlide(-1));
+      });
+
+      async function updateCartCount() {
+        const response = await fetch("/cart/items");
+        const data = await response.json();
+        const cartCount = data.cart.reduce((sum, item) => sum + item.quantity, 0);
+        document.getElementById("cart-count").innerText = cartCount;
+      }
+
+      document.querySelectorAll(".add-to-cart-form").forEach(form => {
+        form.addEventListener("submit", async (e) => {
+          e.preventDefault();
+
+          const formData = new FormData(form);
+          const response = await fetch("/cart/add", {
+            method: "POST",
+            body: formData
+          });
+
+          const data = await response.json();
+          if (data.success) {
+            updateCartCount();
+          } else {
+            console.error("Failed to add product to cart.");
+          }
+        });
+      });
+    </script>
+
 </body>
 
 </html>
